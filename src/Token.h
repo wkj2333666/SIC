@@ -19,7 +19,7 @@ public:
     DataToken(std::string value): data(value) {}
     ~DataToken() override = default;
     int getType()const override {return 0;}
-    const std::variant<int, double>& getData() const {return data;}
+    const std::variant<int, double, std::string>& getData() const {return data;}
     // auto getData() const;
 };
 
