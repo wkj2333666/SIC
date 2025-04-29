@@ -20,23 +20,24 @@ public:
     ~DataToken() override = default;
     int getType()const override {return 0;}
     const std::variant<int, double, std::string>& getData() const {return data;}
+    friend std::ostream& operator<<(std::ostream& os, const DataToken& token);
     // auto getData() const;
 };
 
 class OpToken : public BaseToken {
     std::string name;
+    int priority;
 public:
-    OpToken(std::string _name): name(_name) {}
+    OpToken(std::string _name, int _priority): name(_name), priority(_priority) {}
     ~OpToken() override = default;
     int getType() const override {return 1;}
-
+    int getPriority() const;
     virtual DataToken* calc(DataToken*, DataToken*) const= 0;
 };
 
 class ADD : public OpToken{
-    int priority;
 public:
-    ADD(): OpToken("+"), priority(0) {}
+    ADD(): OpToken("+", 0) {}
     ~ADD() override = default;
     DataToken* calc(DataToken* , DataToken*) const override;
 };
