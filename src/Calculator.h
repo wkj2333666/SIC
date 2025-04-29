@@ -3,7 +3,7 @@
 
 class Calculator {
     std::vector<BaseToken*> tokens; // ownership
-    std::vector<BaseToken*> postfix;// ownership
+    std::vector<BaseToken*> postfix;// no ownership
     std::vector<BaseToken*> stack;  // no ownership
     Tokenizer* tokenizer;
 public:
@@ -15,5 +15,5 @@ public:
     void transform();
     DataToken* calculate();
     void run(std::string input);
-    void clear(std::vector<BaseToken*>& vec);
+    void clear(std::vector<BaseToken*>& vec); // only for tokens
 };
