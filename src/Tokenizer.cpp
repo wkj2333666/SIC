@@ -61,8 +61,14 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
             // decide which op
             if (current == "+") {
                 tokens.push_back(new ADD());
+            } else if (current == "-") {
+                tokens.push_back(new SUB());
+            } else if (current == "*") {
+                tokens.push_back(new MUL());
+            } else if (current == "/") {
+                tokens.push_back(new DIV());
             } 
-            // else if (current == "-") {
+            // else if (current == "^") {
             
             #ifdef DEBUG
             std::cout << "Tokeneized op: " << current << std::endl;

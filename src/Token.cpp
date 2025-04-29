@@ -46,3 +46,42 @@ DataToken* ADD::calc(DataToken* left, DataToken* right) const{
 int OpToken::getPriority() const{
     return priority;
 }
+
+DataToken* SUB::calc(DataToken* left, DataToken* right) const{
+    if (left->getData().index() == 0 && right->getData().index() == 0) {
+        return new DataToken(std::get<int>(left->getData()) - std::get<int>(right->getData()));
+    } else if (left->getData().index() == 0 && right->getData().index() == 1) {
+        return new DataToken(std::get<int>(left->getData()) - std::get<double>(right->getData()));
+    } else if (left->getData().index() == 1 && right->getData().index() == 0) {
+        return new DataToken(std::get<double>(left->getData()) - std::get<int>(right->getData()));
+    } else if (left->getData().index() == 1 && right->getData().index() == 1) {
+        return new DataToken(std::get<double>(left->getData()) - std::get<double>(right->getData()));
+    }
+    return nullptr; // invalid SUB operation!
+}
+
+DataToken* MUL::calc(DataToken* left, DataToken* right) const{
+    if (left->getData().index() == 0 && right->getData().index() == 0) {
+        return new DataToken(std::get<int>(left->getData()) * std::get<int>(right->getData()));
+    } else if (left->getData().index() == 0 && right->getData().index() == 1) {
+        return new DataToken(std::get<int>(left->getData()) * std::get<double>(right->getData()));
+    } else if (left->getData().index() == 1 && right->getData().index() == 0) {
+        return new DataToken(std::get<double>(left->getData()) * std::get<int>(right->getData()));
+    } else if (left->getData().index() == 1 && right->getData().index() == 1) {
+        return new DataToken(std::get<double>(left->getData()) * std::get<double>(right->getData()));
+    }
+    return nullptr; // invalid MUL operation!
+}
+
+DataToken* DIV::calc(DataToken* left, DataToken* right) const{
+    if (left->getData().index() == 0 && right->getData().index() == 0) {
+        return new DataToken(std::get<int>(left->getData()) / static_cast<double>(std::get<int>(right->getData())));
+    } else if (left->getData().index() == 0 && right->getData().index() == 1) {
+        return new DataToken(std::get<int>(left->getData()) / std::get<double>(right->getData()));
+    } else if (left->getData().index() == 1 && right->getData().index() == 0) {
+        return new DataToken(std::get<double>(left->getData()) / std::get<int>(right->getData()));
+    } else if (left->getData().index() == 1 && right->getData().index() == 1) {
+        return new DataToken(std::get<double>(left->getData()) / std::get<double>(right->getData()));
+    }
+    return nullptr; // invalid DIV operation!
+}

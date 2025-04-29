@@ -42,3 +42,23 @@ public:
     DataToken* calc(DataToken* , DataToken*) const override;
 };
 
+class SUB : public OpToken{
+public:
+    SUB(): OpToken("-", 0) {}
+    ~SUB() override = default;
+    DataToken* calc(DataToken* , DataToken*) const override;
+};
+
+class MUL : public OpToken{
+public:
+    MUL(): OpToken("*", 1) {}
+    ~MUL() override = default;
+    DataToken* calc(DataToken* , DataToken*) const override;
+};
+
+class DIV : public OpToken{
+public:
+    DIV(): OpToken("/", 1) {}
+    ~DIV() override = default;
+    DataToken* calc(DataToken* , DataToken*) const override;
+};
