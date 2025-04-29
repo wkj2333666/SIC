@@ -28,7 +28,7 @@ std::ostream& operator<<(std::ostream& os, const DataToken& token) {
 }
 
 
-DataToken* ADD::calc(DataToken* left, DataToken* right) const{
+DataToken* ADD::calc(const DataToken* const left, const DataToken* const right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
         return new DataToken(std::get<int>(left->getData()) + std::get<int>(right->getData()));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
@@ -47,7 +47,7 @@ int OpToken::getPriority() const{
     return priority;
 }
 
-DataToken* SUB::calc(DataToken* left, DataToken* right) const{
+DataToken* SUB::calc(const DataToken* const left, const DataToken* const right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
         return new DataToken(std::get<int>(left->getData()) - std::get<int>(right->getData()));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
@@ -60,7 +60,7 @@ DataToken* SUB::calc(DataToken* left, DataToken* right) const{
     return nullptr; // invalid SUB operation!
 }
 
-DataToken* MUL::calc(DataToken* left, DataToken* right) const{
+DataToken* MUL::calc(const DataToken* const left, const DataToken* const right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
         return new DataToken(std::get<int>(left->getData()) * std::get<int>(right->getData()));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
@@ -73,7 +73,7 @@ DataToken* MUL::calc(DataToken* left, DataToken* right) const{
     return nullptr; // invalid MUL operation!
 }
 
-DataToken* DIV::calc(DataToken* left, DataToken* right) const{
+DataToken* DIV::calc(const DataToken* const left, const DataToken* const right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
         return new DataToken(std::get<int>(left->getData()) / static_cast<double>(std::get<int>(right->getData())));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
