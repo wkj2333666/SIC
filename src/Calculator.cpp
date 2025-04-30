@@ -70,6 +70,9 @@ DataToken* Calculator::calculate() {
             std::cout << "Calculating with op: " << std::endl;
             #endif
             stack.push_back(dynamic_cast<OpToken*>(*it)->calc(left, right));
+            delete right;
+            delete left;
+            delete (*it);
         }
     }
     #ifdef DEBUG
@@ -91,5 +94,7 @@ void Calculator::run(std::string input) {
     std::cout << "Calculating" << std::endl;
     #endif
     std::cout << *calculate() << std::endl;
+    clear(stack);
+    postfix.clear();
     tokens.clear();
 }
