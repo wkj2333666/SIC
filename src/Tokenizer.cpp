@@ -34,6 +34,12 @@ std::string Tokenizer::getOperator(std::string s, int& pos) {
     return ans;
 }
 
+void Tokenizer::skipSpace(std::string s, int& pos) {
+    while (pos < s.size() && s[pos] == ' ') {
+        pos++;
+    }
+}
+
 void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
 {
     int pos = 0;
@@ -41,14 +47,11 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
         #ifdef DEBUG
         std::cout << "pos: " << pos << ", current: " << current << std::endl;
         #endif
-        if (input.substr(pos, 1) == " ") {
-            pos++;
-            continue;
-        }
+        skipSpace(input, pos);
 
         std::string current = getDigit(input, pos);
         if (current == "") {
-            throw std::runtime_error("Expected digit, got: " + input.substr(pos, 1) + ", at " + std::to_string(pos));
+            throw std::runtime_error("Expected digit, got: \"" + input.substr(pos, 1) + "\", at " + std::to_string(pos));
         } else {
             // cast to double
             size_t index = 0;
@@ -61,15 +64,16 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
                 }
             } else {
             // error
-            throw std::runtime_error("Invalid number: " + current + ", at " + std::to_string(pos));
+            throw std::runtime_error("Invalid number: \"" + current + "\", at " + std::to_string(pos));
             }
         }
 
         if (pos >= input.size()) {break;}
+        skipSpace(input, pos);
 
         current = getOperator(input, pos);
         if (current == "") {
-            throw std::runtime_error("Expected operator, got: " + input.substr(pos, 1) + ", at " + std::to_string(pos));
+            throw std::runtime_error("Expected operator, got: \"" + input.substr(pos, 1) + "\", at " + std::to_string(pos));
         } else {
             // decide which op
             if (current == "+") {
@@ -81,7 +85,7 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
             } else if (current == "/") {
                 tokens.push_back(new DIV());
             } else {
-                throw std::runtime_error("Invalid operator: " + current + ", at " + std::to_string(pos));
+                throw std::runtime_error("Invalid operator: \"" + current + "\", at " + std::to_string(pos));
             }
         }
     }
