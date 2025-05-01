@@ -14,4 +14,7 @@ public:
 
     bool isOperator(std::string s);
     bool isDigit(std::string s);
+
+    std::string getDigit(std::string s, int& pos);
+    std::string getOperator(std::string s, int& pos);
 };

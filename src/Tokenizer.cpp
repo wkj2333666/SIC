@@ -13,9 +13,29 @@ bool Tokenizer::isDigit(std::string s)
     return digit.end() > std::find(digit.begin(), digit.end(), s);
 }
 
+std::string Tokenizer::getDigit(std::string s, int& pos) {
+    std::string ans = "";
+    if (s[pos] == '-') {
+        ans += s[pos++];
+    }
+    if (!isDigit(s.substr(pos, 1)))
+        {return "";}
+    while (pos < s.size() && isDigit(s.substr(pos, 1))) {
+        ans += s[pos++];
+    }
+    return ans;
+}
+
+std::string Tokenizer::getOperator(std::string s, int& pos) {
+    std::string ans = "";
+    while (pos < s.size() && isOperator(s.substr(pos, 1))) {
+        ans += s[pos++];
+    }
+    return ans;
+}
+
 void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
 {
-    std::string current = "";
     int pos = 0;
     while (pos < input.size()) {
         #ifdef DEBUG
@@ -24,40 +44,33 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
         if (input.substr(pos, 1) == " ") {
             pos++;
             continue;
-        } else if (isDigit(input.substr(pos, 1))) {
-            do {
-                current += input[pos++];
-            } while (pos < input.size() && isDigit(input.substr(pos, 1)));
-            
-            #ifdef DEBUG
-            std::cout << "Tokeneized digit: " << current << std::endl;
-            #endif
+        }
 
+        std::string current = getDigit(input, pos);
+        if (current == "") {
+            throw std::runtime_error("Expected digit, got: " + input.substr(pos, 1) + ", at " + std::to_string(pos));
+        } else {
             // cast to double
             size_t index = 0;
             double val = std::stod(current, &index);
             if (index == current.size()) {
-                tokens.push_back(new DataToken(val));
-                current = "";
-                continue;
-            } 
-
-            // cast to int
-            index = 0;
-            int val2 = std::stoi(current, &index);
-            if (index == current.size()) {
-                tokens.push_back(new DataToken(val2));
-                current = "";
-                continue;
-            }
-
+                if (val != int(val)) {
+                    tokens.push_back(new DataToken(val));
+                } else {
+                    tokens.push_back(new DataToken(int(val)));
+                }
+            } else {
             // error
             throw std::runtime_error("Invalid number: " + current + ", at " + std::to_string(pos));
-        } else if (isOperator(input.substr(pos, 1))) {
-            do {
-                current += input[pos++];
-            } while (pos < input.size() && isOperator(input.substr(pos, 1)));
+            }
+        }
 
+        if (pos >= input.size()) {break;}
+
+        current = getOperator(input, pos);
+        if (current == "") {
+            throw std::runtime_error("Expected operator, got: " + input.substr(pos, 1) + ", at " + std::to_string(pos));
+        } else {
             // decide which op
             if (current == "+") {
                 tokens.push_back(new ADD());
@@ -67,16 +80,9 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
                 tokens.push_back(new MUL());
             } else if (current == "/") {
                 tokens.push_back(new DIV());
-            } 
-            // else if (current == "^") {
-            
-            #ifdef DEBUG
-            std::cout << "Tokeneized op: " << current << std::endl;
-            #endif
-            current = "";
-        }
-        else {
-            throw std::runtime_error("Invalid character: " + input.substr(pos, 1) + ", at " + std::to_string(pos));
+            } else {
+                throw std::runtime_error("Invalid operator: " + current + ", at " + std::to_string(pos));
+            }
         }
     }
 }
