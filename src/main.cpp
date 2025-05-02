@@ -1,5 +1,6 @@
-#include "Calculator.h"
 #include <iostream>
+
+#include "Calculator.h"
 
 int main() {
     Calculator calculator;
@@ -7,10 +8,18 @@ int main() {
     while (true) {
         std::cout << ">>> ";
         std::getline(std::cin, input);
+        if (std::cin.eof()) {
+            exit(0);
+        }
+
         #ifdef DEBUG
         std::cout << "Running calculator" << std::endl;
         #endif
-        calculator.run(input);
+        try {
+            calculator.run(input);
+        } catch (const std::exception &e) {
+            std::cerr << e.what() << std::endl;
+        }
     }
     return 0;
 }

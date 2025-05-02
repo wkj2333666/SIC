@@ -1,5 +1,8 @@
 #include "Calculator.h"
+
 #include <iostream>
+
+#include "Exception.h"
 
 void Calculator::clear(std::vector<BaseToken*>& vec) {
     for (auto it = vec.begin(); it != vec.end(); it++) {
@@ -9,7 +12,7 @@ void Calculator::clear(std::vector<BaseToken*>& vec) {
 }
 
 
-void Calculator::tokenize(std::string input) {
+void Calculator::tokenize(const std::string& input) {
     tokenizer->tokenize(tokens, input);
     #ifdef DEBUG
     std::cout << "token size: " << tokens.size() << std::endl;
@@ -67,9 +70,14 @@ DataToken* Calculator::calculate() {
             DataToken* left = dynamic_cast<DataToken*>(stack.back());
             stack.pop_back();
             #ifdef DEBUG
-            std::cout << "Calculating with op: " << std::endl;
+            std::cout << "Calculating with op: " << dynamic_cast<OpToken*>(*it)->getName() << std::endl;
             #endif
-            stack.push_back(dynamic_cast<OpToken*>(*it)->calc(left, right));
+            DataToken* res = dynamic_cast<OpToken*>(*it)->calc(left, right);
+            if (res == nullptr) {
+                throw InvalidCalculation("Invalid calculation of " + (*it)->toString() + " on " + left->toString() + " and " + right->toString());
+            } else {
+                stack.push_back(res);
+            }
             delete right;
             delete left;
             delete (*it);
@@ -81,7 +89,7 @@ DataToken* Calculator::calculate() {
     return dynamic_cast<DataToken*>(stack.back());
 }
 
-void Calculator::run(std::string input) {
+void Calculator::run(const std::string& input) {
     #ifdef DEBUG
     std::cout << "Tokenizing: " << input << std::endl;
     #endif

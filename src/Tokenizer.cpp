@@ -1,19 +1,21 @@
 #include "Tokenizer.h"
+
 #include <algorithm>
-#include <stdexcept>
 #include <iostream>
 
-bool Tokenizer::isOperator(std::string s)
+#include "Exception.h"
+
+bool Tokenizer::isOperator(const std::string& s) const
 {
     return op.end() > std::find(op.begin(), op.end(), s);
 }
 
-bool Tokenizer::isDigit(std::string s)
+bool Tokenizer::isDigit(const std::string& s)const
 {
     return digit.end() > std::find(digit.begin(), digit.end(), s);
 }
 
-std::string Tokenizer::getDigit(std::string s, int& pos) {
+std::string Tokenizer::getDigit(const std::string& s, int& pos)const {
     std::string ans = "";
     if (s[pos] == '-') {
         ans += s[pos++];
@@ -26,7 +28,7 @@ std::string Tokenizer::getDigit(std::string s, int& pos) {
     return ans;
 }
 
-std::string Tokenizer::getOperator(std::string s, int& pos) {
+std::string Tokenizer::getOperator(const std::string& s, int& pos)const {
     std::string ans = "";
     while (pos < s.size() && isOperator(s.substr(pos, 1))) {
         ans += s[pos++];
@@ -34,8 +36,8 @@ std::string Tokenizer::getOperator(std::string s, int& pos) {
     return ans;
 }
 
-void Tokenizer::skipSpace(std::string s, int& pos) {
-    while (pos < s.size() && s[pos] == ' ') {
+void Tokenizer::skipSpace(const std::string& s, int& pos)const {
+    while (pos < s.size() && (s[pos] == ' ' || s[pos] == '\t')) {
         pos++;
     }
 }
@@ -43,15 +45,19 @@ void Tokenizer::skipSpace(std::string s, int& pos) {
 void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
 {
     int pos = 0;
+    skipSpace(input, pos);
+    if (pos == input.size()) {
+        throw NoExpression("No expression");
+    }
     while (pos < input.size()) {
+        if (pos == input.size()) {break;}
+
+        std::string current = getDigit(input, pos);
         #ifdef DEBUG
         std::cout << "pos: " << pos << ", current: " << current << std::endl;
         #endif
-        skipSpace(input, pos);
-
-        std::string current = getDigit(input, pos);
         if (current == "") {
-            throw std::runtime_error("Expected digit, got: \"" + input.substr(pos, 1) + "\", at " + std::to_string(pos));
+            throw LackingDigit("Expected digit, got: \"" + input.substr(pos, 1) + "\", at " + std::to_string(pos));
         } else {
             // cast to double
             size_t index = 0;
@@ -64,16 +70,19 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
                 }
             } else {
             // error
-            throw std::runtime_error("Invalid number: \"" + current + "\", at " + std::to_string(pos));
+            throw InvalidDigit("Invalid number: \"" + current + "\", at " + std::to_string(pos));
             }
         }
 
-        if (pos >= input.size()) {break;}
         skipSpace(input, pos);
+        if (pos == input.size()) {break;}
 
         current = getOperator(input, pos);
+        #ifdef DEBUG
+        std::cout << "pos: " << pos << ", current: " << current << std::endl;
+        #endif
         if (current == "") {
-            throw std::runtime_error("Expected operator, got: \"" + input.substr(pos, 1) + "\", at " + std::to_string(pos));
+            throw LackingOperator("Expected operator, got: \"" + input.substr(pos, 1) + "\", at " + std::to_string(pos));
         } else {
             // decide which op
             if (current == "+") {
@@ -84,9 +93,20 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
                 tokens.push_back(new MUL());
             } else if (current == "/") {
                 tokens.push_back(new DIV());
+            } else if (current == "^") {
+                tokens.push_back(new POW());
+            } else if (current == "%") {
+                tokens.push_back(new MOD());
+            } else if (current == "//") {
+                tokens.push_back(new IDIV());
             } else {
-                throw std::runtime_error("Invalid operator: \"" + current + "\", at " + std::to_string(pos));
+                throw InvalidOperator("Invalid operator: \"" + current + "\", at " + std::to_string(pos));
             }
+        }
+
+        skipSpace(input, pos);
+        if (pos == input.size()) {
+            throw LackingDigit("Expected digit, got: \"\", at " + std::to_string(pos));
         }
     }
 }

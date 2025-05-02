@@ -7,6 +7,7 @@ public:
     BaseToken() = default;
     virtual ~BaseToken() = default;
     virtual int getType() const= 0;
+    virtual std::string toString() const = 0;
     // 0 for data, 1 for op;
 };
 
@@ -21,7 +22,7 @@ public:
     int getType()const override {return 0;}
     const std::variant<int, double, std::string>& getData() const {return data;}
     friend std::ostream& operator<<(std::ostream& os, const DataToken& token);
-    // auto getData() const;
+    std::string toString() const override;
 };
 
 class OpToken : public BaseToken {
@@ -32,6 +33,7 @@ public:
     ~OpToken() override = default;
     int getType() const override {return 1;}
     int getPriority() const;
+    std::string toString() const override{return name;}
     virtual DataToken* calc(const DataToken* const, const DataToken* const) const= 0;
 };
 
@@ -60,5 +62,26 @@ class DIV : public OpToken{
 public:
     DIV(): OpToken("/", 1) {}
     ~DIV() override = default;
+    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+};
+
+class POW : public OpToken{
+public:
+    POW(): OpToken("^", 2) {}
+    ~POW() override = default;
+    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+};
+
+class MOD : public OpToken{
+public:
+    MOD(): OpToken("%", 1) {}
+    ~MOD() override = default;
+    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+};
+
+class IDIV : public OpToken{
+public:
+    IDIV(): OpToken("//", 1) {}
+    ~IDIV() override = default;
     DataToken* calc(const DataToken* const , const DataToken* const) const override;
 };

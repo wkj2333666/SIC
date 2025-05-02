@@ -11,9 +11,9 @@ public:
     ~Calculator() {
         delete tokenizer;
     }
-    void tokenize(std::string input);
+    void tokenize(const std::string& input);
     void transform();
     DataToken* calculate();
-    void run(std::string input);
+    void run(const std::string& input);
     void clear(std::vector<BaseToken*>& vec); // only for deep clear
 };

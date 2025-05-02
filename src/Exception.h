@@ -1,0 +1,39 @@
+#pragma once
+#include <stdexcept>
+#include <string>
+
+class InvalidDigit : public std::runtime_error {
+public:
+    InvalidDigit(const std::string &message) : std::runtime_error(message) {}
+    InvalidDigit(const char *message) : std::runtime_error(message) {}
+};
+
+class InvalidOperator : public std::runtime_error {
+public:
+    InvalidOperator(const std::string &message) : std::runtime_error(message) {}
+    InvalidOperator(const char *message) : std::runtime_error(message) {}
+};
+
+class LackingDigit : public std::runtime_error {
+public:
+    LackingDigit(const std::string &message) : std::runtime_error(message) {}
+    LackingDigit(const char *message) : std::runtime_error(message) {}
+};
+
+class LackingOperator : public std::runtime_error {
+public:
+    LackingOperator(const std::string &message) : std::runtime_error(message) {}
+    LackingOperator(const char *message) : std::runtime_error(message) {}
+};
+
+class InvalidCalculation : public std::runtime_error {
+public:
+    InvalidCalculation(const std::string &message) : std::runtime_error(message) {}
+    InvalidCalculation(const char *message) : std::runtime_error(message) {}
+};
+
+class NoExpression : public std::runtime_error {
+public:
+    NoExpression(const std::string &message) : std::runtime_error(message) {}
+    NoExpression(const char *message) : std::runtime_error(message) {}
+};
