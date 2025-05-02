@@ -33,17 +33,17 @@ std::ostream& operator<<(std::ostream& os, const DataToken& token) {
 }
 
 
-DataToken* ADD::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> ADD::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::get<int>(left->getData()) + std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) + std::get<int>(right->getData()));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
-        return new DataToken(std::get<int>(left->getData()) + std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) + std::get<double>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 0) {
-        return new DataToken(std::get<double>(left->getData()) + std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) + std::get<int>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 1) {
-        return new DataToken(std::get<double>(left->getData()) + std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) + std::get<double>(right->getData()));
     } else if (left->getData().index() == 2 && right->getData().index() == 2) {
-        return new DataToken(std::get<std::string>(left->getData()) + std::get<std::string>(right->getData()));
+        return std::make_shared<DataToken>(std::get<std::string>(left->getData()) + std::get<std::string>(right->getData()));
     }
     return nullptr; // invalid ADD operation!
 }
@@ -52,68 +52,68 @@ int OpToken::getPriority() const{
     return priority;
 }
 
-DataToken* SUB::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> SUB::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::get<int>(left->getData()) - std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) - std::get<int>(right->getData()));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
-        return new DataToken(std::get<int>(left->getData()) - std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) - std::get<double>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 0) {
-        return new DataToken(std::get<double>(left->getData()) - std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) - std::get<int>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 1) {
-        return new DataToken(std::get<double>(left->getData()) - std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) - std::get<double>(right->getData()));
     }
     return nullptr; // invalid SUB operation!
 }
 
-DataToken* MUL::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> MUL::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::get<int>(left->getData()) * std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) * std::get<int>(right->getData()));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
-        return new DataToken(std::get<int>(left->getData()) * std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) * std::get<double>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 0) {
-        return new DataToken(std::get<double>(left->getData()) * std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) * std::get<int>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 1) {
-        return new DataToken(std::get<double>(left->getData()) * std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) * std::get<double>(right->getData()));
     }
     return nullptr; // invalid MUL operation!
 }
 
-DataToken* DIV::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> DIV::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::get<int>(left->getData()) / static_cast<double>(std::get<int>(right->getData())));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) / static_cast<double>(std::get<int>(right->getData())));
     } else if (left->getData().index() == 0 && right->getData().index() == 1) {
-        return new DataToken(std::get<int>(left->getData()) / std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) / std::get<double>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 0) {
-        return new DataToken(std::get<double>(left->getData()) / std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) / std::get<int>(right->getData()));
     } else if (left->getData().index() == 1 && right->getData().index() == 1) {
-        return new DataToken(std::get<double>(left->getData()) / std::get<double>(right->getData()));
+        return std::make_shared<DataToken>(std::get<double>(left->getData()) / std::get<double>(right->getData()));
     }
     return nullptr; // invalid DIV operation!
 }
 
-DataToken* POW::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> POW::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::pow(std::get<int>(left->getData()), std::get<int>(right->getData())));
+        return std::make_shared<DataToken>(std::pow(std::get<int>(left->getData()), std::get<int>(right->getData())));
     } else if (left->getData().index() == 0 && right->getData().index()) {
-        return new DataToken(std::pow(std::get<int>(left->getData()), std::get<double>(right->getData())));
+        return std::make_shared<DataToken>(std::pow(std::get<int>(left->getData()), std::get<double>(right->getData())));
     } else if (left->getData().index() == 1 && right->getData().index() == 0) {
-        return new DataToken(std::pow(std::get<double>(left->getData()), std::get<int>(right->getData())));
+        return std::make_shared<DataToken>(std::pow(std::get<double>(left->getData()), std::get<int>(right->getData())));
     } else if (left->getData().index() == 1 && right->getData().index() == 1) {
-        return new DataToken(std::pow(std::get<double>(left->getData()), std::get<double>(right->getData())));
+        return std::make_shared<DataToken>(std::pow(std::get<double>(left->getData()), std::get<double>(right->getData())));
     }
     return nullptr; // invalid POW operation!
 }
 
-DataToken* MOD::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> MOD::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::get<int>(left->getData()) % std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) % std::get<int>(right->getData()));
     }
     return nullptr; // invalid MOD operation!
 }
 
-DataToken* IDIV::calc(const DataToken* const left, const DataToken* const right) const{
+std::shared_ptr<DataToken> IDIV::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
-        return new DataToken(std::get<int>(left->getData()) / std::get<int>(right->getData()));
+        return std::make_shared<DataToken>(std::get<int>(left->getData()) / std::get<int>(right->getData()));
     }
     return nullptr; // invalid IDIV operation!
 }

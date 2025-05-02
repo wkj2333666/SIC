@@ -11,7 +11,7 @@ public:
     //    , "(", ")", "{", "}", "[", "]", "=", ":", ",", ".", "!", "&&", "||", "<", ">", "<=", ">=", "==", "!="}) {}
         digit({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."}) {}
     ~Tokenizer() = default;
-    void tokenize(std::vector<BaseToken*>& tokens, std::string input);
+    void tokenize(std::vector<std::shared_ptr<BaseToken>>& tokens, std::string input);
 
     bool isOperator(const std::string& s) const;
     bool isDigit(const std::string& s) const;

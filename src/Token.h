@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <variant>
+#include <memory>
 
 class BaseToken {
 public:
@@ -34,54 +35,54 @@ public:
     int getType() const override {return 1;}
     int getPriority() const;
     std::string toString() const override{return name;}
-    virtual DataToken* calc(const DataToken* const, const DataToken* const) const= 0;
+    virtual std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken>, const std::shared_ptr<const DataToken>) const= 0;
 };
 
 class ADD : public OpToken{
 public:
     ADD(): OpToken("+", 0) {}
     ~ADD() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class SUB : public OpToken{
 public:
     SUB(): OpToken("-", 0) {}
     ~SUB() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class MUL : public OpToken{
 public:
     MUL(): OpToken("*", 1) {}
     ~MUL() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class DIV : public OpToken{
 public:
     DIV(): OpToken("/", 1) {}
     ~DIV() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class POW : public OpToken{
 public:
     POW(): OpToken("^", 2) {}
     ~POW() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class MOD : public OpToken{
 public:
     MOD(): OpToken("%", 1) {}
     ~MOD() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class IDIV : public OpToken{
 public:
     IDIV(): OpToken("//", 1) {}
     ~IDIV() override = default;
-    DataToken* calc(const DataToken* const , const DataToken* const) const override;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };

@@ -4,11 +4,10 @@
 
 #include "Exception.h"
 
-void Calculator::clear(std::vector<BaseToken*>& vec) {
-    for (auto it = vec.begin(); it != vec.end(); it++) {
-        delete *it;
-    }
-    vec.clear();
+void Calculator::clear() {
+    tokens.clear();
+    postfix.clear();
+    stack.clear();
 }
 
 
@@ -29,14 +28,14 @@ void Calculator::transform() {
         } else if ((*it)->getType() == 1) {
             // OpToken
             if (stack.empty() || 
-            dynamic_cast<OpToken*>(stack.back())->getPriority()
-             < dynamic_cast<OpToken*>(*it)->getPriority())
+            std::dynamic_pointer_cast<OpToken>(stack.back())->getPriority()
+             < std::dynamic_pointer_cast<OpToken>(*it)->getPriority())
             {
                 stack.push_back((*it));
             } else {
                 while (!stack.empty() && 
-                dynamic_cast<OpToken*>(stack.back())->getPriority()
-                >= dynamic_cast<OpToken*>(*it)->getPriority())
+                std::dynamic_pointer_cast<OpToken>(stack.back())->getPriority()
+                >= std::dynamic_pointer_cast<OpToken>(*it)->getPriority())
                 {
                     postfix.push_back(stack.back());
                     stack.pop_back();
@@ -51,7 +50,7 @@ void Calculator::transform() {
     }
 }
 
-DataToken* Calculator::calculate() {
+std::shared_ptr<DataToken> Calculator::calculate() {
     stack.clear();
     for (auto it = postfix.begin(); it != postfix.end(); it++) {
         #ifdef DEBUG
@@ -65,28 +64,25 @@ DataToken* Calculator::calculate() {
             #ifdef DEBUG
             std::cout << "Processing op" << std::endl;
             #endif
-            DataToken* right = dynamic_cast<DataToken*>(stack.back());
+            std::shared_ptr<DataToken> right = std::dynamic_pointer_cast<DataToken>(stack.back());
             stack.pop_back();
-            DataToken* left = dynamic_cast<DataToken*>(stack.back());
+            std::shared_ptr<DataToken> left = std::dynamic_pointer_cast<DataToken>(stack.back());
             stack.pop_back();
             #ifdef DEBUG
-            std::cout << "Calculating with op: " << dynamic_cast<OpToken*>(*it)->getName() << std::endl;
+            std::cout << "Calculating with op: " << std::dynamic_pointer_cast<std::shared_ptr<OpToken>>(*it)->getName() << std::endl;
             #endif
-            DataToken* res = dynamic_cast<OpToken*>(*it)->calc(left, right);
+            std::shared_ptr<DataToken> res = std::dynamic_pointer_cast<OpToken>(*it)->calc(left, right);
             if (res == nullptr) {
                 throw InvalidCalculation("Invalid calculation of " + (*it)->toString() + " on " + left->toString() + " and " + right->toString());
             } else {
                 stack.push_back(res);
             }
-            delete right;
-            delete left;
-            delete (*it);
         }
     }
     #ifdef DEBUG
     std::cout << "Returning from calculate()" << std::endl;
     #endif
-    return dynamic_cast<DataToken*>(stack.back());
+    return std::dynamic_pointer_cast<DataToken>(stack.back());
 }
 
 void Calculator::run(const std::string& input) {
@@ -102,7 +98,7 @@ void Calculator::run(const std::string& input) {
     std::cout << "Calculating" << std::endl;
     #endif
     std::cout << *calculate() << std::endl;
-    clear(stack);
+    stack.clear();
     postfix.clear();
     tokens.clear();
 }

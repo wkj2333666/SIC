@@ -9,7 +9,7 @@ int main() {
         std::cout << ">>> ";
         std::getline(std::cin, input);
         if (std::cin.eof()) {
-            exit(0);
+            return 0;
         }
 
         #ifdef DEBUG
@@ -19,6 +19,7 @@ int main() {
             calculator.run(input);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
+            calculator.clear();
         }
     }
     return 0;
