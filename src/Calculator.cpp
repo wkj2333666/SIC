@@ -4,18 +4,37 @@
 
 #include "Exception.h"
 
-void Calculator::clear() {
-    tokens.clear();
-    postfix.clear();
-    stack.clear();
-}
+// void Calculator::clear() {
+//     tokens.clear();
+//     postfix.clear();
+//     stack.clear();
+// }
 
 
 void Calculator::tokenize(const std::string& input) {
     tokenizer->tokenize(tokens, input);
     #ifdef DEBUG
-    std::cout << "token size: " << tokens.size() << std::endl;
+    std::cout << "Got tokens: ";
+    for (auto it = tokens.begin(); it != tokens.end(); it++) {
+        std::cout << (*it)->toString() + ' ';
+    }
+    std::cout << std::endl;
     #endif
+}
+
+void Calculator::pop_until_LPAR() {
+    while (!stack.empty() && stack.back()->getType() != 2) {
+        postfix.emplace_back(stack.back());
+        #ifdef DEBUG
+        std::cout << "Postfix pushed: " << postfix.back()->toString() << std::endl;
+        std::cout << "Stack popped: " << stack.back()->toString() << std::endl;
+        #endif
+        stack.pop_back();
+    }
+    #ifdef DEBUG
+    std::cout << "Stack popped: " << stack.back()->toString() << std::endl;
+    #endif
+    stack.pop_back();
 }
 
 void Calculator::transform() {
@@ -24,30 +43,61 @@ void Calculator::transform() {
     for (auto it = tokens.begin(); it != tokens.end(); it++) {
         if ((*it)->getType() == 0) {
             // DataToken
-            postfix.push_back((*it));
+            postfix.emplace_back((*it));
+            #ifdef DEBUG
+            std::cout << "Postfix pushed: " << postfix.back()->toString() << std::endl;
+            #endif
         } else if ((*it)->getType() == 1) {
             // OpToken
-            if (stack.empty() || 
-            std::dynamic_pointer_cast<OpToken>(stack.back())->getPriority()
-             < std::dynamic_pointer_cast<OpToken>(*it)->getPriority())
-            {
-                stack.push_back((*it));
-            } else {
-                while (!stack.empty() && 
+            while (true) {
+                if (stack.empty() || stack.back()->getType() == 2 || //LPAR
                 std::dynamic_pointer_cast<OpToken>(stack.back())->getPriority()
-                >= std::dynamic_pointer_cast<OpToken>(*it)->getPriority())
+                < std::dynamic_pointer_cast<OpToken>(*it)->getPriority())
                 {
-                    postfix.push_back(stack.back());
+                    stack.emplace_back((*it));
+                    #ifdef DEBUG
+                    std::cout << "Stack pushed: " << stack.back()->toString() << std::endl;
+                    #endif
+                    break;
+                } else {
+                    postfix.emplace_back(stack.back());
+                    #ifdef DEBUG
+                    std::cout << "Postfix pushed: " << postfix.back()->toString() << std::endl;
+                    std::cout << "Stack popped: " << stack.back()->toString() << std::endl;
+                    #endif
                     stack.pop_back();
                 }
-                stack.push_back((*it));
+            }
+        } else if ((*it)->getType() == 2) {
+            if (std::dynamic_pointer_cast<Parenthesis>(*it)->LorR() == 0) {
+                stack.emplace_back((*it));
+                #ifdef DEBUG
+                std::cout << "Meeting: (" << std::endl;
+                std::cout << "Stack pushed: " << stack.back()->toString() << std::endl;
+                #endif
+            } else {
+                #ifdef DEBUG
+                std::cout << "Meeting: )" << std::endl;
+                #endif
+                pop_until_LPAR();
             }
         }
     }
     while (!stack.empty()) {
-        postfix.push_back(stack.back());
+        postfix.emplace_back(stack.back());
+        #ifdef DEBUG
+        std::cout << "Postfix pushed: " << postfix.back()->toString() << std::endl;
+        std::cout << "Stack popped: " << stack.back()->toString() << std::endl;
+        #endif
         stack.pop_back();
     }
+    #ifdef DEBUG
+    std::cout << "Got postfix: ";
+    for (auto it = postfix.begin(); it != postfix.end(); it++) {
+        std::cout << (*it)->toString() << ' ';
+    }
+    std::cout << std::endl;
+    #endif
 }
 
 std::shared_ptr<DataToken> Calculator::calculate() {
@@ -58,24 +108,21 @@ std::shared_ptr<DataToken> Calculator::calculate() {
         #endif
         if ((*it)->getType() == 0) {
             // DataToken
-            stack.push_back((*it));
+            stack.emplace_back((*it));
         } else if ((*it)->getType() == 1) {
             // OpToken
-            #ifdef DEBUG
-            std::cout << "Processing op" << std::endl;
-            #endif
             std::shared_ptr<DataToken> right = std::dynamic_pointer_cast<DataToken>(stack.back());
             stack.pop_back();
             std::shared_ptr<DataToken> left = std::dynamic_pointer_cast<DataToken>(stack.back());
             stack.pop_back();
             #ifdef DEBUG
-            std::cout << "Calculating with op: " << std::dynamic_pointer_cast<std::shared_ptr<OpToken>>(*it)->getName() << std::endl;
+            std::cout << "Calculating: " << left->toString() + ' ' + (*it)->toString() + ' ' + right->toString() << std::endl;
             #endif
             std::shared_ptr<DataToken> res = std::dynamic_pointer_cast<OpToken>(*it)->calc(left, right);
             if (res == nullptr) {
                 throw InvalidCalculation("Invalid calculation of " + (*it)->toString() + " on " + left->toString() + " and " + right->toString());
             } else {
-                stack.push_back(res);
+                stack.emplace_back(res);
             }
         }
     }

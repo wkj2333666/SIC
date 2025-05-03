@@ -37,3 +37,15 @@ public:
     NoExpression(const std::string &message) : std::runtime_error(message) {}
     NoExpression(const char *message) : std::runtime_error(message) {}
 };
+
+class LackingRPAR : public std::runtime_error {
+public:
+    LackingRPAR(const std::string& message): std::runtime_error(message) {}
+    LackingRPAR(const char* message): std::runtime_error(message) {}
+};
+
+class ExtraRPAR : public std::runtime_error {
+public:
+    ExtraRPAR(const std::string& message): std::runtime_error(message) {}
+    ExtraRPAR(const char* message): std::runtime_error(message) {}
+};

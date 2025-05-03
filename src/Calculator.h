@@ -15,5 +15,6 @@ public:
     void transform();
     std::shared_ptr<DataToken> calculate();
     void run(const std::string& input);
-    void clear();
+    void pop_until_LPAR();
+    // void clear();
 };

@@ -86,3 +86,29 @@ public:
     ~IDIV() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
+
+class Parenthesis : public BaseToken {
+public:
+    Parenthesis() = default;
+    ~Parenthesis() override = default;
+    int getType() const override {return 2;}
+    // 0 for left, 1 for right
+    virtual int LorR() const = 0;
+    std::string toString() const = 0;
+};
+
+class LPAR : public Parenthesis {
+public:
+    LPAR(): Parenthesis() {}
+    ~LPAR() override = default;
+    int LorR() const override {return 0;}
+    std::string toString() const override {return "(";}
+};
+
+class RPAR : public Parenthesis {
+public:
+    RPAR(): Parenthesis() {}
+    ~RPAR() override = default;
+    int LorR() const override {return 1;}
+    std::string toString() const override {return ")";}
+};

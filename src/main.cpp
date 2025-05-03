@@ -19,7 +19,7 @@ int main() {
             calculator.run(input);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
-            calculator.clear();
+            // calculator.clear();
         }
     }
     return 0;

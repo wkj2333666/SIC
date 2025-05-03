@@ -36,16 +36,29 @@ std::string Tokenizer::getOperator(const std::string& s, int& pos)const {
     return ans;
 }
 
-void Tokenizer::skipSpace(const std::string& s, int& pos)const {
-    while (pos < s.size() && (s[pos] == ' ' || s[pos] == '\t')) {
+void Tokenizer::skipSpace(std::vector<std::shared_ptr<BaseToken>>& tokens, const std::string& s, int& pos){
+    while (pos < s.size() && (s[pos] == ' ' || s[pos] == '\t') || s[pos] == '(' || s[pos] == ')') {
+        if (s[pos] == '(') {
+            tokens.emplace_back(std::make_shared<LPAR>());
+            #ifdef DEBUG
+            std::cout << "pos: " << pos+1 << ", current: (" << std::endl;
+            #endif
+            LoverR++;
+        } else if (s[pos] == ')') {
+            tokens.emplace_back(std::make_shared<RPAR>());
+            #ifdef DEBUG
+            std::cout << "pos: " << pos+1 << ", current: )" << std::endl;
+            #endif
+            LoverR--;
+        }
         pos++;
     }
 }
 
-void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
+void Tokenizer::tokenize(std::vector<std::shared_ptr<BaseToken>> &tokens,const std::string& input)
 {
     int pos = 0;
-    skipSpace(input, pos);
+    skipSpace(tokens, input, pos);
     if (pos == input.size()) {
         throw NoExpression("No expression");
     }
@@ -64,9 +77,9 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
             double val = std::stod(current, &index);
             if (index == current.size()) {
                 if (val != int(val)) {
-                    tokens.push_back(new DataToken(val));
+                    tokens.emplace_back(std::make_shared<DataToken>(val));
                 } else {
-                    tokens.push_back(new DataToken(int(val)));
+                    tokens.emplace_back(std::make_shared<DataToken>(int(val)));
                 }
             } else {
             // error
@@ -74,7 +87,7 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
             }
         }
 
-        skipSpace(input, pos);
+        skipSpace(tokens, input, pos);
         if (pos == input.size()) {break;}
 
         current = getOperator(input, pos);
@@ -86,28 +99,33 @@ void Tokenizer::tokenize(std::vector<BaseToken *> &tokens, std::string input)
         } else {
             // decide which op
             if (current == "+") {
-                tokens.push_back(new ADD());
+                tokens.emplace_back(std::make_shared<ADD>());
             } else if (current == "-") {
-                tokens.push_back(new SUB());
+                tokens.emplace_back(std::make_shared<SUB>());
             } else if (current == "*") {
-                tokens.push_back(new MUL());
+                tokens.emplace_back(std::make_shared<MUL>());
             } else if (current == "/") {
-                tokens.push_back(new DIV());
+                tokens.emplace_back(std::make_shared<DIV>());
             } else if (current == "^") {
-                tokens.push_back(new POW());
+                tokens.emplace_back(std::make_shared<POW>());
             } else if (current == "%") {
-                tokens.push_back(new MOD());
+                tokens.emplace_back(std::make_shared<MOD>());
             } else if (current == "//") {
-                tokens.push_back(new IDIV());
+                tokens.emplace_back(std::make_shared<IDIV>());
             } else {
                 throw InvalidOperator("Invalid operator: \"" + current + "\", at " + std::to_string(pos));
             }
         }
 
-        skipSpace(input, pos);
+        skipSpace(tokens, input, pos);
         if (pos == input.size()) {
             throw LackingDigit("Expected digit, got: \"\", at " + std::to_string(pos));
         }
+    }
+    if (LoverR > 0) {
+        throw LackingRPAR("Lacking right parenthesis");
+    } else if (LoverR < 0) {
+        throw ExtraRPAR("Extra right parenthesis");
     }
 }
 
