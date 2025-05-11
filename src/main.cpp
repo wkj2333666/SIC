@@ -1,6 +1,11 @@
 #include <iostream>
+#include <unordered_map>
+#include <functional>
 
 #include "Calculator.h"
+
+std::unordered_map<std::string, TYPE> variables;
+std::unordered_map<std::string, std::function<TYPE(std::vector<TYPE>)>> functions;
 
 int main() {
     Calculator calculator;
@@ -19,7 +24,7 @@ int main() {
             calculator.run(input);
         } catch (const std::exception &e) {
             std::cerr << e.what() << std::endl;
-            // calculator.clear();
+            calculator.clear();
         }
     }
     return 0;

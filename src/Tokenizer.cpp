@@ -2,8 +2,13 @@
 
 #include <algorithm>
 #include <iostream>
+#include <unordered_map>
+#include <functional>
 
 #include "Exception.h"
+
+extern std::unordered_map<std::string, TYPE> variables;
+extern std::unordered_map<std::string, std::function<TYPE(std::vector<TYPE>)>> functions;
 
 bool Tokenizer::isOperator(const std::string& s) const
 {
@@ -58,6 +63,7 @@ void Tokenizer::skipSpace(std::vector<std::shared_ptr<BaseToken>>& tokens, const
 void Tokenizer::tokenize(std::vector<std::shared_ptr<BaseToken>> &tokens,const std::string& input)
 {
     int pos = 0;
+    LoverR = 0;
     skipSpace(tokens, input, pos);
     if (pos == input.size()) {
         throw NoExpression("No expression");

@@ -3,6 +3,10 @@
 #include <variant>
 #include <memory>
 
+#include "None.h"
+
+#define TYPE std::variant<int, double, std::string, bool, None>
+
 class BaseToken {
 public:
     BaseToken() = default;
@@ -13,15 +17,17 @@ public:
 };
 
 class DataToken : public BaseToken {
-    std::variant<int, double, std::string> data;
+    TYPE data;
 public:
-    DataToken(): data(0){}
+    // DataToken(): data(0){}
     DataToken(int value): data(value) {}
     DataToken(double value): data(value) {}
     DataToken(const std::string& value): data(value) {}
+    DataToken(bool value): data(value) {}
+    DataToken(): data(None()) {}
     ~DataToken() override = default;
     int getType()const override {return 0;}
-    const std::variant<int, double, std::string>& getData() const {return data;}
+    const TYPE& getData() const {return data;}
     friend std::ostream& operator<<(std::ostream& os, const DataToken& token);
     std::string toString() const override;
 };

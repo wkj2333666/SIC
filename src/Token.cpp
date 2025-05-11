@@ -28,6 +28,11 @@ std::ostream& operator<<(std::ostream& os, const DataToken& token) {
         case 2:
             os << std::get<std::string>(token.getData());
             break;
+        case 3:
+            os << std::get<bool>(token.getData());
+            break;
+        case 4:
+            break;
     }
     return os;
 }

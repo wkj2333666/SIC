@@ -1,15 +1,19 @@
 #include "Calculator.h"
 
 #include <iostream>
+#include <unordered_map>
+#include <functional>
 
 #include "Exception.h"
 
-// void Calculator::clear() {
-//     tokens.clear();
-//     postfix.clear();
-//     stack.clear();
-// }
+extern std::unordered_map<std::string, TYPE> variables;
+extern std::unordered_map<std::string, std::function<TYPE(std::vector<TYPE>)>> functions;
 
+void Calculator::clear() {
+    tokens.clear();
+    postfix.clear();
+    stack.clear();
+}
 
 void Calculator::tokenize(const std::string& input) {
     tokenizer->tokenize(tokens, input);
