@@ -136,7 +136,7 @@ std::shared_ptr<DataToken> Calculator::calculate() {
     return std::dynamic_pointer_cast<DataToken>(stack.back());
 }
 
-void Calculator::run(const std::string& input) {
+std::string Calculator::run(const std::string& input) {
     #ifdef DEBUG
     std::cout << "Tokenizing: " << input << std::endl;
     #endif
@@ -148,8 +148,9 @@ void Calculator::run(const std::string& input) {
     #ifdef DEBUG
     std::cout << "Calculating" << std::endl;
     #endif
-    std::cout << *calculate() << std::endl;
+    std::string result = calculate()->toString();
     stack.clear();
     postfix.clear();
     tokens.clear();
+    return result;
 }

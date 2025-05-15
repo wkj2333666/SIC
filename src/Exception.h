@@ -49,3 +49,9 @@ public:
     ExtraRPAR(const std::string& message): std::runtime_error(message) {}
     ExtraRPAR(const char* message): std::runtime_error(message) {}
 };
+
+class UndefinedVariable : public std::runtime_error {
+public:
+    UndefinedVariable(const std::string &message) : std::runtime_error(message) {}
+    UndefinedVariable(const char *message) : std::runtime_error(message) {}
+};

@@ -16,6 +16,6 @@ public:
     ~Calculator() {
         delete tokenizer;
     }
-    void run(const std::string& input);
+    std::string run(const std::string& input);
     void clear();
 };
