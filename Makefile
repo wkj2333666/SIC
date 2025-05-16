@@ -1,4 +1,4 @@
-./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o
+./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o
 	g++ $^ -o $@ -std=c++17
 
 ./obj/main.o: ./src/main.cpp ./src/Exception.h

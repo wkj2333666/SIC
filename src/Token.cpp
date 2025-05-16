@@ -37,6 +37,9 @@ std::ostream& operator<<(std::ostream& os, const DataToken& token) {
     return os;
 }
 
+int OpToken::getPriority() const{
+    return priority;
+}
 
 std::shared_ptr<DataToken> ADD::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
@@ -51,10 +54,6 @@ std::shared_ptr<DataToken> ADD::calc(const std::shared_ptr<const DataToken> left
         return std::make_shared<DataToken>(std::get<std::string>(left->getData()) + std::get<std::string>(right->getData()));
     }
     return nullptr; // invalid ADD operation!
-}
-
-int OpToken::getPriority() const{
-    return priority;
 }
 
 std::shared_ptr<DataToken> SUB::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{

@@ -55,3 +55,15 @@ public:
     UndefinedVariable(const std::string &message) : std::runtime_error(message) {}
     UndefinedVariable(const char *message) : std::runtime_error(message) {}
 };
+
+class UndefinedFunction : public std::runtime_error {
+public:
+    UndefinedFunction(const std::string &message) : std::runtime_error(message) {}
+    UndefinedFunction(const char *message) : std::runtime_error(message) {}
+};
+
+class InvalidArguments : public std::runtime_error {
+public:
+    InvalidArguments(const std::string &message) : std::runtime_error(message) {}
+    InvalidArguments(const char *message) : std::runtime_error(message) {}
+};

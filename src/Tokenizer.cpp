@@ -7,9 +7,6 @@
 
 #include "Exception.h"
 
-extern std::unordered_map<std::string, TYPE> variables;
-extern std::unordered_map<std::string, std::function<TYPE(std::vector<TYPE>)>> functions;
-
 bool Tokenizer::isOperator(const std::string& s) const
 {
     return op.end() > std::find(op.begin(), op.end(), s);
@@ -134,5 +131,3 @@ void Tokenizer::tokenize(std::vector<std::shared_ptr<BaseToken>> &tokens,const s
         throw ExtraRPAR("Extra right parenthesis");
     }
 }
-
-

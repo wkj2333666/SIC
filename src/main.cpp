@@ -4,9 +4,6 @@
 
 #include "Calculator.h"
 
-std::unordered_map<std::string, TYPE> variables;
-std::unordered_map<std::string, std::function<TYPE(std::vector<TYPE>)>> functions;
-
 int main() {
     Calculator calculator;
     std::string input;

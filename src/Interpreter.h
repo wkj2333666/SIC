@@ -7,35 +7,35 @@
 class Interpreter {
     Calculator* calculator;
     // int currentPos;
-    std::vector<int> stack_for_call;
+    std::vector<int> stack_for_goto;
     std::unordered_map<std::string, int> functions;
-    std::unordered_map<std::string, DataToken*> variables;
-    // ownership
+    std::unordered_map<std::string, std::string> variables;
 
     std::regex regex_for_variable;
     std::regex regex_for_function;
+    std::regex regex_for_param_list;
 
-    std::string substitute_variables(const std::string& expression);
-    std::string substitute_functions(const std::string& expression);
-    std::string evaluate(const std::string& expression);
+    std::string evaluate(const std::string& expression, std::ifstream& code);
+        std::string substitute_variables(const std::string& expression);
+        std::string substitute_functions(const std::string& expression, std::ifstream& code);
+            // std::vector<std::string> split_args(const std::string& args);
+
     void GO2(int pos, std::ifstream& code);
     void RET(std::ifstream& code);
+    std::string CALL(const std::string& function_name, const std::string& args, std::ifstream& code);
 public:
     Interpreter(): 
         calculator(new Calculator()),
-        stack_for_call(),
+        stack_for_goto(),
         functions(),
         variables(),
         regex_for_variable(R"([a-zA-Z0-9_]+)(?!\()"),
-        regex_for_function(R"(([a-zA-Z0-9_]+)\((.*)\))")
+        regex_for_function(R"(([a-zA-Z0-9_]+)\((.*)\))"),
         // [1] for function name, [2] for arguments
+        regex_for_param_list(R"(([a-zA-Z0-9_]+)\s*(?=,|\)))")
     {}
-    ~Interpreter() { 
-        delete calculator; 
-        for (auto it = variables.begin(); it != variables.end(); ++it) {
-            delete it->second;
-        }
-    }
+    ~Interpreter() {delete calculator;}
 
+    std::string execute(std::ifstream& code);
     void interpret(std::ifstream& code);
 };
