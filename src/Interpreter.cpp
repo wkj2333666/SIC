@@ -1,20 +1,22 @@
 #include <sstream>
+#include <iostream>
 
 #include "Interpreter.h"
 #include "Exception.h"
 
-void Interpreter::GO2(int pos, std::ifstream& code) {
+void Interpreter::GOTO(int pos, std::ifstream& code) {
     code.seekg(pos);
-    stack_for_goto.push_back(pos);
+    // stack_for_call.push_back(pos);
 }
 
 void Interpreter::RET(std::ifstream& code) {
-    code.seekg(stack_for_goto.back());
-    stack_for_goto.pop_back();
+    code.seekg(stack_for_call.back());
+    stack_for_call.pop_back();
 }
 
 std::string Interpreter::CALL(const std::string& function_name, const std::string& args, std::ifstream& code) {
-    GO2(functions[function_name], code);
+    stack_for_call.push_back(code.tellg());
+    GOTO(functions[function_name], code);
 
     // get function declaration
     std::string function_declaration;
@@ -38,7 +40,7 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     }
 
     // execute function body
-    std::string return_value = execute(code);
+    std::string return_value = interpret(code);
 
     // remove temporary variables
     for (int i = 0; i < num_of_args; i++) {
@@ -94,4 +96,46 @@ std::string Interpreter::substitute_functions(const std::string& expression, std
     }
     result += expression.substr(pos);
     return result;
+}
+
+// std::string Interpreter::execute(std::ifstream& code) {
+//     //TODO
+// }
+
+std::string Interpreter::interpret(std::ifstream& code) {
+    //TODO
+    std::string command;
+    code >> command;
+    if (command == "let") {
+        std::string var_name;
+        code >> var_name;
+        std::string equal_sign;
+        std::getline(code, equal_sign, '=');
+        std::string expr;
+        std::getline(code, expr);
+        variables[var_name] = evaluate(expr, code);
+    } else if (command == "if") {
+        std::string cond;
+        std::getline(code, cond);
+        int if_start = code.tellg();
+        std::string block;
+        std::getline(code, block, "end");
+    } else if (command == "while") {
+        
+    } else if (command == "print") {
+        std::string expr;
+        std::getline(code, expr);
+        std::string result = evaluate(expr, code);
+        std::cout << result << std::endl;
+    } else if (command == "return") {
+        std::string expr;
+        std::getline(code, expr);
+        std::string return_value = evaluate(expr, code);
+        RET(code);
+        return return_value;
+    } else if (command == "EOF") {
+
+    } else {
+        throw InvalidCommand("Invalid command: " + command);
+    }
 }

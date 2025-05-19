@@ -67,3 +67,9 @@ public:
     InvalidArguments(const std::string &message) : std::runtime_error(message) {}
     InvalidArguments(const char *message) : std::runtime_error(message) {}
 };
+
+class InvalidCommand : public std::runtime_error {
+public:
+    InvalidCommand(const std::string &message) : std::runtime_error(message) {}
+    InvalidCommand(const char *message) : std::runtime_error(message) {}
+};
