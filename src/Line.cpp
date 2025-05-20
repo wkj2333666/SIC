@@ -24,6 +24,7 @@ std::string PRINT::execute(Interpreter* interpreter) {
 }
 
 std::string DEF::execute(Interpreter* interpreter) {
+    interpreter->functions[func_name] = LineNumber;
     interpreter->CurrentLine = end + 1;
     return "";
 }

@@ -1,7 +1,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "Interpreter.h"
+#include "Interpreter_old.h"
 #include "Exception.h"
 
 void Interpreter::GOTO(int pos, std::ifstream& code) {

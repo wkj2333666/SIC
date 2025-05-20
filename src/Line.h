@@ -6,9 +6,12 @@ class Interpreter;
 class Line{
 protected:
     std::string expr;
-    static int CurrentLine;
+    int LineNumber;
 public:
-    Line(std::string expr, int LineNumber) {}
+    Line(std::string _expr, int _LineNumber):
+        expr(_expr), 
+        LineNumber(_LineNumber)
+    {}
     virtual ~Line() {}
     virtual std::string execute(Interpreter*) = 0;
 
