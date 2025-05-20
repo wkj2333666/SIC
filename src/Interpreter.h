@@ -11,7 +11,7 @@ class Interpreter {
     int CurrentLine;
     // int currentPos;
     std::vector<int> stack_for_call;
-    std::vector<Line> codes;
+    std::vector<Line*> codes;
     // std::vector<int> cstack_for_while;
 
     std::unordered_map<std::string, int> functions;
@@ -30,6 +30,7 @@ class Interpreter {
     void parse(std::fstream& code_file);
         void parse_if();
         void parse_while();
+        void parse_def();
 public:
     Interpreter():
         calculator(new Calculator()),
@@ -45,6 +46,9 @@ public:
     {}
     ~Interpreter() {
         delete calculator;
+        for (auto line : codes) {
+            delete line;
+        }
     }
     void interpret();
 

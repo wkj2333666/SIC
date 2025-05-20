@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "Interpreter.h"
 #include "Exception.h"
 
@@ -6,7 +8,7 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     CurrentLine = functions[function_name];
 
     // get function declaration
-    std::string function_declaration = codes[CurrentLine].expr;
+    std::string function_declaration = codes[CurrentLine]->expr;
 
     // split arguments
     std::vector<std::string> split_args;
@@ -30,7 +32,7 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     // execute function body
     CurrentLine++; // enter function body
     std::string return_value;
-    while ((return_value = codes[CurrentLine].execute(this)) != ""){}
+    while ((return_value = codes[CurrentLine]->execute(this)) != ""){}
 
     // remove temporary variables
     for (int i = 0; i < num_of_args; i++) {
@@ -90,4 +92,83 @@ std::string Interpreter::substitute_functions(const std::string& expression) {
     }
     result += expression.substr(pos);
     return result;
+}
+
+void Interpreter::parse_if() {
+    std::vector<Line*> if_stack;
+    for (auto line : codes) {
+        if (line->getType() == 3) { // IF
+            if_stack.push_back(line);
+        } else if (line->getType() == 4) { // END_IF
+            if (if_stack.empty())
+                throw SyntaxError("At line:" + std::to_string(line->LineNumber) + "No matching if for endif.");
+            dynamic_cast<IF*>(if_stack.back())->setEnd(line->LineNumber);
+            dynamic_cast<END_IF*>(line)->setBegin(if_stack.back()->LineNumber);
+            if_stack.pop_back();
+        }
+    }
+    if (!if_stack.empty())
+        throw SyntaxError("At line:" + std::to_string(if_stack.back()->LineNumber) + "No matching endif for if.");
+}
+
+void Interpreter::parse_def() {
+    std::vector<Line*> def_stack;
+    for (auto line : codes) {
+        if (line->getType() == 1) { // DEF
+            def_stack.push_back(line);
+        } else if (line->getType() == 2) { // END_DEF
+            if (def_stack.empty())
+                throw SyntaxError("At line:" + std::to_string(line->LineNumber) + "No matching def for enddef.");
+            dynamic_cast<DEF*>(def_stack.back())->setEnd(line->LineNumber);
+            dynamic_cast<END_DEF*>(line)->setBegin(def_stack.back()->LineNumber);
+            def_stack.pop_back();
+        }
+    }
+    if (!def_stack.empty())
+        throw SyntaxError("At line:" + std::to_string(def_stack.back()->LineNumber) + "No matching enddef for def.");
+}
+
+void Interpreter::parse_while() {
+    std::vector<Line*> while_stack;
+    for (auto line : codes) {
+        if (line->getType() == 5) { // WHILE
+            while_stack.push_back(line);
+        } else if (line->getType() == 6) { // END_WHILE
+            if (while_stack.empty())
+                throw SyntaxError("At line:" + std::to_string(line->LineNumber) + "No matching while for endwhile.");
+            dynamic_cast<WHILE*>(while_stack.back())->setEnd(line->LineNumber);
+            dynamic_cast<END_WHILE*>(line)->setBegin(while_stack.back()->LineNumber);
+            while_stack.pop_back();
+        }
+    }
+    if (!while_stack.empty())
+        throw SyntaxError("At line:" + std::to_string(while_stack.back()->LineNumber) + "No matching endwhile for while.");
+}
+
+void Interpreter::parse(std::fstream& code_file) {
+    std::string buffer;
+    int LineNumber = 1;
+    while (std::getline(code_file, buffer)) {
+        std::stringstream ss(buffer);
+        std::string command;
+        std::string expr;
+        ss >> command;
+        std::getline(ss, expr);
+
+        if (command == "let") codes.push_back(new LET(expr, LineNumber));
+        else if (command == "print") codes.push_back(new PRINT(expr, LineNumber));
+        else if (command == "def") codes.push_back(new DEF(expr, LineNumber));
+        else if (command == "enddef") codes.push_back(new END_DEF(expr, LineNumber));
+        else if (command == "if") codes.push_back(new IF(expr, LineNumber));
+        else if (command == "endif") codes.push_back(new END_IF(expr, LineNumber));
+        else if (command == "while") codes.push_back(new WHILE(expr, LineNumber));
+        else if (command == "endwhile") codes.push_back(new END_WHILE(expr, LineNumber));
+        else if (command == "return") codes.push_back(new RET(expr, LineNumber));
+        else codes.push_back(new EXPR(expr, LineNumber));
+
+        LineNumber++;
+    }
+    parse_if();
+    parse_def();
+    parse_while();
 }
