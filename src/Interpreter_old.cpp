@@ -50,7 +50,7 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     return return_value;
 }
 
-std::string Interpreter::evaluate(const std::string& expression, std::ifstream& code) {
+std::string Interpreter::evaluate(const std::string& expression) {
     return calculator->run(substitute_functions(substitute_variables(expression), code));
 }
 

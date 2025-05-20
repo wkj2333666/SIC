@@ -4,6 +4,7 @@
 #include <regex>
 
 #include "Calculator.h"
+#include "Line.h"
 
 enum Command{
     IF,
@@ -17,6 +18,7 @@ enum Command{
 
 class Interpreter {
     Calculator* calculator;
+    int CurrentLine = 0;
     // int currentPos;
     std::vector<int> stack_for_call;
     // std::vector<int> cstack_for_while;
@@ -28,7 +30,7 @@ class Interpreter {
     std::regex regex_for_function;
     std::regex regex_for_param_list;
 
-    std::string evaluate(const std::string& expression, std::ifstream& code);
+    std::string evaluate(const std::string& expression);
         std::string substitute_variables(const std::string& expression);
         std::string substitute_functions(const std::string& expression, std::ifstream& code);
             // std::vector<std::string> split_args(const std::string& args);
@@ -48,6 +50,17 @@ public:
         regex_for_param_list(R"(([a-zA-Z_][a-zA-Z0-9_]*)\s*(?=,|\)))")
     {}
     ~Interpreter() {delete calculator;}
+    
+    friend class LET;
+    friend class PRINT;
+    friend class DEF;
+    friend class END_DEF;
+    friend class IF;
+    friend class END_IF;
+    friend class WHILE;
+    friend class END_WHILE;
+    friend class RET;
+    friend class EXPR;
 
     // std::string execute(std::ifstream& code);
     std::string interpret(std::ifstream& code);
