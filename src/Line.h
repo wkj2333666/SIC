@@ -13,7 +13,7 @@ public:
         LineNumber(_LineNumber)
     {}
     virtual ~Line() {}
-    virtual std::string execute(Interpreter*) = 0;
+    virtual std::string execute(Interpreter* const) const = 0;
 
     friend Interpreter;
 };
@@ -22,14 +22,14 @@ class LET: public Line{
 public:
     LET(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~LET() override {}
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class PRINT: public Line{
 public:
     PRINT(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~PRINT() override {}
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class DEF: public Line{
@@ -38,7 +38,7 @@ public:
     DEF(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~DEF() override {}
     void setEnd(int _end) { end = _end; }
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class END_DEF: public Line{
@@ -47,7 +47,7 @@ public:
     END_DEF(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~END_DEF() override {}
     void setBegin(int _begin) { begin = _begin; }
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class IF: public Line{
@@ -56,7 +56,7 @@ public:
     IF(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~IF() override {}
     void setEnd(int _end) { end = _end; }
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class END_IF: public Line{
@@ -65,7 +65,7 @@ public:
     END_IF(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~END_IF() override {}
     void setBegin(int _begin) { begin = _begin; }
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class WHILE: public Line{
@@ -74,7 +74,7 @@ public:
     WHILE(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~WHILE() override {}
     void setEnd(int _end) { end = _end; }
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class END_WHILE: public Line{
@@ -83,19 +83,19 @@ public:
     END_WHILE(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~END_WHILE() override {}
     void setBegin(int _begin) { begin = _begin; }
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class RET: public Line{
 public:
     RET(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~RET() override {}
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };
 
 class EXPR: public Line{
 public:
     EXPR(std::string expr, int LineNumber) : Line(expr, LineNumber) {}
     ~EXPR() override {}
-    std::string execute(Interpreter*) override;
+    std::string execute(Interpreter* const) const override;
 };

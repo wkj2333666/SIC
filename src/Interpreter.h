@@ -23,7 +23,7 @@ class Interpreter {
 
     std::string evaluate(const std::string& expression);
         std::string substitute_variables(const std::string& expression);
-        std::string substitute_functions(const std::string& expression, std::ifstream& code);
+        std::string substitute_functions(const std::string& expression);
         std::string CALL(const std::string& function_name, const std::string& args);
         // std::vector<std::string> split_args(const std::string& args);
     
