@@ -1,5 +1,6 @@
-/.vscode
-/bin
-/obj
+.vscode
+bin
+obj
 开题报告.md
 开题报告.pdf
+src/main.cpp_old

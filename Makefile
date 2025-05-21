@@ -1,4 +1,4 @@
-./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o
+./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o
 	g++ $^ -o $@ -std=c++17
 
 ./obj/main.o: ./src/main.cpp ./src/Exception.h
@@ -12,6 +12,8 @@
 .PHONY: run
 
 .PHONY: debug
+
+.PHONY: idebug
 
 .PHONY: fresh
 
@@ -28,3 +30,6 @@ debug:
 fresh:
 	touch ./src/*.cpp
 	touch ./src/*.h
+
+idebug: 
+	g++ src/*.cpp -o bin/$@ -std=c++17 -DiDEBUG

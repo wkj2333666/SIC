@@ -16,6 +16,9 @@ public:
     virtual std::string execute(Interpreter* const) const = 0;
     virtual int getType() const { return 0;}
     // 0 for default
+    #ifdef iDEBUG
+    virtual void show() const = 0;
+    #endif
 
     friend Interpreter;
 };
@@ -25,6 +28,9 @@ public:
     LET(const std::string& expr, int LineNumber) : Line(expr, LineNumber) {}
     ~LET() override {}
     std::string execute(Interpreter* const) const override;
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class PRINT: public Line{
@@ -32,6 +38,9 @@ public:
     PRINT(const std::string& expr, int LineNumber) : Line(expr, LineNumber) {}
     ~PRINT() override {}
     std::string execute(Interpreter* const) const override;
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class DEF: public Line{
@@ -42,6 +51,9 @@ public:
     void setEnd(int _end) { end = _end; }
     std::string execute(Interpreter* const) const override;
     int getType() const override { return 1; }
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class END_DEF: public Line{
@@ -52,6 +64,9 @@ public:
     void setBegin(int _begin) { begin = _begin; }
     std::string execute(Interpreter* const) const override;
     int getType() const override { return 2; }
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class IF: public Line{
@@ -62,6 +77,9 @@ public:
     void setEnd(int _end) { end = _end; }
     std::string execute(Interpreter* const) const override;
     int getType() const override { return 3; }
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class END_IF: public Line{
@@ -72,6 +90,9 @@ public:
     void setBegin(int _begin) { begin = _begin; }
     std::string execute(Interpreter* const) const override;
     int getType() const override { return 4; }
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class WHILE: public Line{
@@ -82,6 +103,9 @@ public:
     void setEnd(int _end) { end = _end; }
     std::string execute(Interpreter* const) const override;
     int getType() const override { return 5; }
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class END_WHILE: public Line{
@@ -92,6 +116,9 @@ public:
     void setBegin(int _begin) { begin = _begin; }
     std::string execute(Interpreter* const) const override;
     int getType() const override { return 6; }
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class RET: public Line{
@@ -99,6 +126,9 @@ public:
     RET(const std::string& expr, int LineNumber) : Line(expr, LineNumber) {}
     ~RET() override {}
     std::string execute(Interpreter* const) const override;
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };
 
 class EXPR: public Line{
@@ -106,4 +136,7 @@ public:
     EXPR(const std::string& expr, int LineNumber) : Line(expr, LineNumber) {}
     ~EXPR() override {}
     std::string execute(Interpreter* const) const override;
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
 };

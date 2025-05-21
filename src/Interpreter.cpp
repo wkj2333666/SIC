@@ -1,4 +1,5 @@
 #include <sstream>
+#include <iostream>
 
 #include "Interpreter.h"
 #include "Exception.h"
@@ -11,13 +12,21 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     std::string function_declaration = codes[CurrentLine]->expr;
 
     // split arguments
+
+    // std::vector<std::string> split_args;
+    // {
+    //     std::smatch match;
+    //     std::regex_search(function_declaration, match, regex_for_param_list);
+    //     for (int i = 1; i < match.size(); i++) {
+    //         split_args.push_back(match[i].str());
+    //     }
+    // }
     std::vector<std::string> split_args;
-    {
-        std::smatch match;
-        std::regex_search(function_declaration, match, regex_for_param_list);
-        for (int i = 1; i < match.size(); i++) {
-            split_args.push_back(match[i].str());
-        }
+    std::string arg_buffer;
+    std::stringstream ss(args);
+    while (std::getline(ss, arg_buffer, ',')) {
+        split_args.push_back(arg_buffer);
+        arg_buffer.clear();
     }
     
     // get function params
@@ -149,11 +158,18 @@ void Interpreter::parse(std::fstream& code_file) {
     std::string buffer;
     int LineNumber = 1;
     while (std::getline(code_file, buffer)) {
+        #ifdef iDEBUG
+        std::cout << "Parsing line " << LineNumber << ": " << buffer << std::endl;
+        #endif
         std::stringstream ss(buffer);
         std::string command;
         std::string expr;
         ss >> command;
         std::getline(ss, expr);
+        #ifdef iDEBUG
+        std::cout << "Command: " << command << std::endl;
+        std::cout << "Expression: " << expr << std::endl;
+        #endif
 
         if (command == "let") codes.push_back(new LET(expr, LineNumber));
         else if (command == "print") codes.push_back(new PRINT(expr, LineNumber));
@@ -164,7 +180,7 @@ void Interpreter::parse(std::fstream& code_file) {
         else if (command == "while") codes.push_back(new WHILE(expr, LineNumber));
         else if (command == "endwhile") codes.push_back(new END_WHILE(expr, LineNumber));
         else if (command == "return") codes.push_back(new RET(expr, LineNumber));
-        else codes.push_back(new EXPR(expr, LineNumber));
+        else codes.push_back(new EXPR(buffer, LineNumber));
 
         LineNumber++;
     }
@@ -172,3 +188,67 @@ void Interpreter::parse(std::fstream& code_file) {
     parse_def();
     parse_while();
 }
+
+void Interpreter::interpret(std::fstream& code_file) {
+    #ifdef iDEBUG
+    std::cout << "Starting interpreting..." << std::endl;
+    std::cout << "Parsing..." << std::endl;
+    #endif
+    parse(code_file);
+    #ifdef iDEBUG
+    std::cout << "Parsing done. Total lines: " << codes.size() << std::endl;
+    std::cout << "Result:" << std::endl;
+    for (auto line : codes) {
+        line->show();
+    }
+    std::cout << "CurrentLine: " << CurrentLine << std::endl;
+    #endif
+    while (CurrentLine < codes.size() + 1) { // note that CurrentLine starts from 1.
+        #ifdef iDEBUG
+        std::cout << "Executing line " << CurrentLine << std::endl;
+        #endif
+        codes[CurrentLine]->execute(this);
+    }
+}
+
+#ifdef iDEBUG
+void LET::show() const {
+    std::cout << "Line " << LineNumber << ": let" << expr << std::endl;
+}
+
+void PRINT::show() const {
+    std::cout << "Line " << LineNumber << ": print" << expr << std::endl;
+}
+
+void DEF::show() const {
+    std::cout << "Line " << LineNumber << ": def" << expr << std::endl;
+}
+
+void END_DEF::show() const {
+    std::cout << "Line " << LineNumber << ": enddef" << expr << std::endl;
+}
+
+void IF::show() const {
+    std::cout << "Line " << LineNumber << ": if" << expr << std::endl;
+}
+
+void END_IF::show() const {
+    std::cout << "Line " << LineNumber << ": endif" << expr << std::endl;
+}
+
+void WHILE::show() const {
+    std::cout << "Line " << LineNumber << ": while" << expr << std::endl;
+}
+
+void END_WHILE::show() const {
+    std::cout << "Line " << LineNumber << ": endwhile" << expr << std::endl;
+}
+
+void RET::show() const {
+    std::cout << "Line " << LineNumber << ": return" << expr << std::endl;
+}
+
+void EXPR::show() const {
+    std::cout << "Line " << LineNumber << ": " << expr << std::endl;
+}
+#endif

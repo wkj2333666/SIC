@@ -1,28 +1,30 @@
 #include <iostream>
-#include <unordered_map>
-#include <functional>
+#include <fstream>
 
-#include "Calculator.h"
+#include "Interpreter.h"
 
-int main() {
-    Calculator calculator;
-    std::string input;
-    while (true) {
-        std::cout << ">>> ";
-        std::getline(std::cin, input);
-        if (std::cin.eof()) {
-            return 0;
-        }
-
-        #ifdef DEBUG
-        std::cout << "Running calculator" << std::endl;
-        #endif
-        try {
-            calculator.run(input);
-        } catch (const std::exception &e) {
-            std::cerr << e.what() << std::endl;
-            calculator.clear();
-        }
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        std::cerr << "Usage: " << argv[0] << " <filename>" << std::endl;
+        return 1;
     }
+
+    std::fstream file;
+    file.open(argv[1], std::ios_base::in);
+    if (!file.is_open()) {
+        std::cerr << "Error: could not open file " << argv[1] << std::endl;
+    }
+    Interpreter interpreter;
+    #ifdef iDEBUG
+    std::cout << "Initialized." << std::endl;
+    #endif
+
+    try {interpreter.interpret(file);}
+    catch (std::runtime_error &e) {
+        std::cerr << e.what() << std::endl;
+        file.close();
+        return 1;
+    }
+    file.close();
     return 0;
 }
