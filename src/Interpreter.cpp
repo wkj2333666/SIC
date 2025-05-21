@@ -126,15 +126,25 @@ std::string Interpreter::substitute_functions(const std::string& expression) {
         result += match.prefix().str();
         std::string function_name = match[1].str();
         std::string args = match[2].str();
+        #ifdef iDEBUG
+        std::cout << "function_name = " << function_name << std::endl;
+        std::cout << "args = " << args << std::endl;
+        #endif
         if (functions.find(function_name) != functions.end()) {
             args = substitute_functions(args);
             result += CALL(function_name, args);
+            #ifdef iDEBUG
+            std::cout << "Current substituted result: " << result << std::endl;
+            #endif
         } else {
             throw UndefinedFunction("Undefined function: " + function_name);
         }
         pos = match.position() + match.length();
     }
     result += expression.substr(pos);
+    #ifdef iDEBUG
+    std::cout << "Substituted expr: " << result << std::endl;
+    #endif
     return result;
 }
 

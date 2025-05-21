@@ -115,6 +115,18 @@ void Tokenizer::tokenize(std::vector<std::shared_ptr<BaseToken>> &tokens,const s
                 tokens.emplace_back(std::make_shared<MOD>());
             } else if (current == "//") {
                 tokens.emplace_back(std::make_shared<IDIV>());
+            } else if (current == "==") {
+                tokens.emplace_back(std::make_shared<EQ>());
+            } else if (current == "!=") {
+                tokens.emplace_back(std::make_shared<NE>());
+            } else if (current == ">") {
+                tokens.emplace_back(std::make_shared<GT>());
+            } else if (current == ">=") {
+                tokens.emplace_back(std::make_shared<GE>());
+            } else if (current == "<") {
+                tokens.emplace_back(std::make_shared<LT>());
+            } else if (current == "<=") {
+                tokens.emplace_back(std::make_shared<LE>());
             } else {
                 throw InvalidOperator("Invalid operator: \"" + current + "\", at " + std::to_string(pos));
             }

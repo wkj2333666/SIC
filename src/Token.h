@@ -93,6 +93,48 @@ public:
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
+class EQ : public OpToken{
+public:
+    EQ(): OpToken("==", 0) {}
+    ~EQ() override = default;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
+};
+
+class NE : public OpToken{
+public:
+    NE(): OpToken("!=", 0) {}
+    ~NE() override = default;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
+};
+
+class GT : public OpToken{
+public:
+    GT(): OpToken(">", 0) {}
+    ~GT() override = default;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
+};
+
+class GE : public OpToken{
+public:
+    GE(): OpToken(">=", 0) {}
+    ~GE() override = default;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
+};
+
+class LT : public OpToken{
+public:
+    LT(): OpToken("<", 0) {}
+    ~LT() override = default;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
+};
+
+class LE : public OpToken{
+public:
+    LE(): OpToken("<=", 0) {}
+    ~LE() override = default;
+    std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
+};
+
 class Parenthesis : public BaseToken {
 public:
     Parenthesis() = default;

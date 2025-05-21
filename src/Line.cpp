@@ -78,6 +78,7 @@ std::string END_WHILE::execute(Interpreter* const interpreter) const {
 std::string RET::execute(Interpreter* const interpreter) const {
     #ifdef iDEBUG
     std::cout << "Executing RET at line: " << interpreter->CurrentLine + 1<< std::endl;
+    std::cout << "expr: " << expr << std::endl;
     #endif
     std::string return_value = interpreter->evaluate(expr);
     #ifdef iDEBUG
