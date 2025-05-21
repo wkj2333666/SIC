@@ -140,3 +140,13 @@ public:
     virtual void show() const override;
     #endif
 };
+
+class CMT: public Line{
+public:
+    CMT(const std::string& expr, int LineNumber) : Line(expr, LineNumber) {}
+    ~CMT() override {}
+    std::string execute(Interpreter* const) const override;
+    #ifdef iDEBUG
+    virtual void show() const override;
+    #endif
+};

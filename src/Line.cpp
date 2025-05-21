@@ -98,3 +98,55 @@ std::string EXPR::execute(Interpreter* const interpreter) const {
     interpreter->CurrentLine++;
     return "";
 }
+
+std::string CMT::execute(Interpreter* const interpreter) const {
+    interpreter->CurrentLine++;
+    return "";
+}
+
+
+#ifdef iDEBUG
+void LET::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": let" << expr << std::endl;
+}
+
+void PRINT::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": print" << expr << std::endl;
+}
+
+void DEF::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": def" << expr << std::endl;
+}
+
+void END_DEF::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": enddef" << expr << std::endl;
+}
+
+void IF::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": if" << expr << std::endl;
+}
+
+void END_IF::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": endif" << expr << std::endl;
+}
+
+void WHILE::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": while" << expr << std::endl;
+}
+
+void END_WHILE::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": endwhile" << expr << std::endl;
+}
+
+void RET::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": return" << expr << std::endl;
+}
+
+void EXPR::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": " << expr << std::endl;
+}
+
+void CMT::show() const {
+    std::cout << "Line " << LineNumber + 1 << ": #" << expr << std::endl;
+}
+#endif

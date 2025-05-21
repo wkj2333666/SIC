@@ -62,4 +62,5 @@ public:
     friend class END_WHILE;
     friend class RET;
     friend class EXPR;
+    friend class CMT;
 };

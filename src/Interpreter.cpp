@@ -225,6 +225,7 @@ void Interpreter::parse(std::fstream& code_file) {
         else if (command == "while") codes.push_back(new WHILE(expr, LineNumber));
         else if (command == "endwhile") codes.push_back(new END_WHILE(expr, LineNumber));
         else if (command == "return") codes.push_back(new RET(expr, LineNumber));
+        else if (command == "#") codes.push_back(new CMT(expr, LineNumber));
         else codes.push_back(new EXPR(buffer, LineNumber));
 
         LineNumber++;
@@ -255,45 +256,3 @@ void Interpreter::interpret(std::fstream& code_file) {
         codes[CurrentLine]->execute(this);
     }
 }
-
-#ifdef iDEBUG
-void LET::show() const {
-    std::cout << "Line " << LineNumber << ": let" << expr << std::endl;
-}
-
-void PRINT::show() const {
-    std::cout << "Line " << LineNumber << ": print" << expr << std::endl;
-}
-
-void DEF::show() const {
-    std::cout << "Line " << LineNumber << ": def" << expr << std::endl;
-}
-
-void END_DEF::show() const {
-    std::cout << "Line " << LineNumber << ": enddef" << expr << std::endl;
-}
-
-void IF::show() const {
-    std::cout << "Line " << LineNumber << ": if" << expr << std::endl;
-}
-
-void END_IF::show() const {
-    std::cout << "Line " << LineNumber << ": endif" << expr << std::endl;
-}
-
-void WHILE::show() const {
-    std::cout << "Line " << LineNumber << ": while" << expr << std::endl;
-}
-
-void END_WHILE::show() const {
-    std::cout << "Line " << LineNumber << ": endwhile" << expr << std::endl;
-}
-
-void RET::show() const {
-    std::cout << "Line " << LineNumber << ": return" << expr << std::endl;
-}
-
-void EXPR::show() const {
-    std::cout << "Line " << LineNumber << ": " << expr << std::endl;
-}
-#endif
