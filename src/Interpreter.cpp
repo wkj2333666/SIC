@@ -12,15 +12,6 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     std::string function_declaration = codes[CurrentLine]->expr;
 
     // split arguments
-
-    // std::vector<std::string> split_args;
-    // {
-    //     std::smatch match;
-    //     std::regex_search(function_declaration, match, regex_for_param_list);
-    //     for (int i = 1; i < match.size(); i++) {
-    //         split_args.push_back(match[i].str());
-    //     }
-    // }
     std::vector<std::string> split_args;
     std::string arg_buffer;
     std::stringstream ss(args);
@@ -52,20 +43,6 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     #ifdef iDEBUG
     std::cout << "num_of_params = " << num_of_params << std::endl;
     #endif
-    // std::smatch match;
-    // std::regex_search(function_declaration, match, regex_for_param_list);
-    // #ifdef iDEBUG
-    // std::cout << "match.size() = " << match.size() << std::endl;
-    // std::cout << "num_of_args = " << num_of_args << std::endl;
-    // std::cout << "match:" << std::endl;
-    // for (int i=0; i<match.size(); i++) {
-    //     std::cout << match[i].str() << std::endl;
-    // }
-    // #endif
-    // if (match.size() != num_of_args + 1) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
-    // for (int i = 0; i < num_of_args; i++) {
-    //     variables[match[i + 1].str()] = calculator->run(split_args[i]);
-    // }
 
     // execute function body
     CurrentLine++; // enter function body
