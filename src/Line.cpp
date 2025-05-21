@@ -5,7 +5,6 @@
 #include "Interpreter.h"
 
 std::string LET::execute(Interpreter* const interpreter) const {
-    interpreter->CurrentLine++;
     std::string var_name_buffer;
     std::string var_name;
     std::string var_value;
@@ -18,13 +17,13 @@ std::string LET::execute(Interpreter* const interpreter) const {
         var_name += c;
     }
     interpreter->variables[var_name] = interpreter->evaluate(var_value);
-
+    interpreter->CurrentLine++;
     return "";
 }
 
 std::string PRINT::execute(Interpreter* const interpreter) const {
-    interpreter->CurrentLine++;
     std::cout << interpreter->evaluate(expr) << std::endl;
+    interpreter->CurrentLine++;
 
     return "";
 }

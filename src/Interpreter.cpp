@@ -36,10 +36,13 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
     int num_of_params = 0;
     for (; it != end; ++it) {
         num_of_params++;
-        if (num_of_params > num_of_args) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
-        variables[(*it)[1].str()] = calculator->run(split_args[num_of_params - 1]);
+        if (num_of_params > num_of_args) {throw InvalidArguments("At line " + std::to_string(CurrentLine + 1) + ": Invalid number of arguments for function " + function_name);}
+        try {variables[(*it)[1].str()] = calculator->run(split_args[num_of_params - 1]);}
+        catch (const CalcError& e) {
+            throw SyntaxError("At line " + std::to_string(CurrentLine + 1) + ": " + e.what());
+        }
     }
-    if (num_of_params < num_of_args) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
+    if (num_of_params < num_of_args) {throw InvalidArguments("At line " + std::to_string(CurrentLine + 1) + ":Invalid number of arguments for function " + function_name);}
     #ifdef iDEBUG
     std::cout << "num_of_params = " << num_of_params << std::endl;
     #endif
@@ -65,8 +68,12 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
 
 std::string Interpreter::evaluate(const std::string& expression) {
     for (int i=0; i<expression.size(); i++) {
-        if (!std::isspace(expression[i]))
-            return calculator->run(substitute_functions(substitute_variables(expression)));
+        if (!std::isspace(expression[i])) {
+            try {return calculator->run(substitute_functions(substitute_variables(expression)));}
+            catch (const CalcError& e) {
+                throw SyntaxError("At line " + std::to_string(CurrentLine + 1) + ": " + e.what());
+            }
+        }
     }
     return " "; // differ from ""
 }
@@ -84,7 +91,7 @@ std::string Interpreter::substitute_variables(const std::string& expression) {
         if (variables.find(var_name) != variables.end()) {
             result += variables[var_name];
         } else {
-            throw UndefinedVariable("Undefined variable: " + var_name);
+            throw UndefinedVariable("At line " + std::to_string(CurrentLine + 1) + ": Undefined variable: " + var_name);
         }
         pos = match.position() + match.length();
     }
@@ -114,7 +121,7 @@ std::string Interpreter::substitute_functions(const std::string& expression) {
             std::cout << "Current substituted result: " << result << std::endl;
             #endif
         } else {
-            throw UndefinedFunction("Undefined function: " + function_name);
+            throw UndefinedFunction("At line " + std::to_string(CurrentLine + 1) + ": Undefined function: " + function_name);
         }
         pos = match.position() + match.length();
     }

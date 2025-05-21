@@ -63,7 +63,9 @@ void Tokenizer::tokenize(std::vector<std::shared_ptr<BaseToken>> &tokens,const s
     LoverR = 0;
     skipSpace(tokens, input, pos);
     if (pos == input.size()) {
-        throw NoExpression("No expression");
+        // throw NoExpression("No expression");
+        tokens.emplace_back(std::make_shared<DataToken>());
+        return;
     }
     while (pos < input.size()) {
         if (pos == input.size()) {break;}
