@@ -6,12 +6,17 @@
 
 std::string LET::execute(Interpreter* const interpreter) const {
     interpreter->CurrentLine++;
+    std::string var_name_buffer;
     std::string var_name;
     std::string var_value;
     std::stringstream sstream(expr);
     
-    std::getline(sstream, var_name, '=');
+    std::getline(sstream, var_name_buffer, '=');
     std::getline(sstream, var_value);
+    for (char c : var_name_buffer) {
+        if (std::isspace(c)) continue;
+        var_name += c;
+    }
     interpreter->variables[var_name] = interpreter->evaluate(var_value);
 
     return "";
@@ -25,7 +30,7 @@ std::string PRINT::execute(Interpreter* const interpreter) const {
 }
 
 std::string DEF::execute(Interpreter* const interpreter) const {
-    std::regex func_regex(R"(([a-zA-Z_][a-zA-Z0-9_]*)\((.*)\))");
+    std::regex func_regex(R"(([a-zA-Z_]\w*)\[(.*)\])");
     // [1] for name, [2] for args
     std::smatch func_match;
     std::regex_search(expr, func_match, func_regex);
@@ -71,9 +76,19 @@ std::string END_WHILE::execute(Interpreter* const interpreter) const {
 }
 
 std::string RET::execute(Interpreter* const interpreter) const {
+    #ifdef iDEBUG
+    std::cout << "Executing RET at line: " << interpreter->CurrentLine + 1<< std::endl;
+    #endif
     std::string return_value = interpreter->evaluate(expr);
+    #ifdef iDEBUG
+    std::cout << "Returning: " << return_value << std::endl;
+    std::cout << "stack_for_call size: " << interpreter->stack_for_call.size() << std::endl;
+    #endif
     interpreter->CurrentLine = interpreter->stack_for_call.back();
     interpreter->stack_for_call.pop_back();
+    #ifdef iDEBUG
+    std::cout << "Returning to line: " << interpreter->CurrentLine + 1 << std::endl;
+    #endif
     return return_value;
 }
 

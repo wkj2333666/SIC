@@ -28,25 +28,60 @@ std::string Interpreter::CALL(const std::string& function_name, const std::strin
         split_args.push_back(arg_buffer);
         arg_buffer.clear();
     }
+    #ifdef iDEBUG
+    std::cout << "function_name = " << function_name << std::endl;
+    std::cout << "function_declaration = " << function_declaration << std::endl;
+    std::cout << "args = " << args << std::endl;
+    for (auto& arg : split_args) {
+        std::cout << "arg = " << arg << std::endl;
+    }
+    #endif
     
     // get function params
-    int num_of_args = args.size();
-    std::smatch match;
-    std::regex_search(function_declaration, match, regex_for_param_list);
-    if (match.size() != num_of_args + 1) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
-    for (int i = 0; i < num_of_args; i++) {
-        variables[match[i + 1].str()] = calculator->run(split_args[i]);
+    int num_of_args = split_args.size();
+    std::sregex_iterator it(function_declaration.begin(), function_declaration.end(), regex_for_param_list);
+    std::sregex_iterator end;
+
+    int num_of_params = 0;
+    for (; it != end; ++it) {
+        num_of_params++;
+        if (num_of_params > num_of_args) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
+        variables[(*it)[1].str()] = calculator->run(split_args[num_of_params - 1]);
     }
+    if (num_of_params < num_of_args) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
+    #ifdef iDEBUG
+    std::cout << "num_of_params = " << num_of_params << std::endl;
+    #endif
+    // std::smatch match;
+    // std::regex_search(function_declaration, match, regex_for_param_list);
+    // #ifdef iDEBUG
+    // std::cout << "match.size() = " << match.size() << std::endl;
+    // std::cout << "num_of_args = " << num_of_args << std::endl;
+    // std::cout << "match:" << std::endl;
+    // for (int i=0; i<match.size(); i++) {
+    //     std::cout << match[i].str() << std::endl;
+    // }
+    // #endif
+    // if (match.size() != num_of_args + 1) {throw InvalidArguments("Invalid number of arguments for function " + function_name);}
+    // for (int i = 0; i < num_of_args; i++) {
+    //     variables[match[i + 1].str()] = calculator->run(split_args[i]);
+    // }
 
     // execute function body
     CurrentLine++; // enter function body
+    #ifdef iDEBUG
+    std::cout << "CurrentLine: " << CurrentLine + 1<< std::endl;
+    #endif
     std::string return_value;
-    while ((return_value = codes[CurrentLine]->execute(this)) != ""){}
+    while ((return_value = codes[CurrentLine]->execute(this)) == ""){}
 
     // remove temporary variables
-    for (int i = 0; i < num_of_args; i++) {
-        variables.erase(match[i + 1].str());
+    for (; it != end; ++it) {
+        variables.erase((*it)[1].str());
     }
+    #ifdef iDEBUG
+    std::cout << "return_value = " << return_value << std::endl;
+    #endif
 
     return return_value;
 }
@@ -110,14 +145,14 @@ void Interpreter::parse_if() {
             if_stack.push_back(line);
         } else if (line->getType() == 4) { // END_IF
             if (if_stack.empty())
-                throw SyntaxError("At line:" + std::to_string(line->LineNumber) + "No matching if for endif.");
+                throw SyntaxError("At line " + std::to_string(line->LineNumber + 1) + ": No matching if for endif.");
             dynamic_cast<IF*>(if_stack.back())->setEnd(line->LineNumber);
             dynamic_cast<END_IF*>(line)->setBegin(if_stack.back()->LineNumber);
             if_stack.pop_back();
         }
     }
     if (!if_stack.empty())
-        throw SyntaxError("At line:" + std::to_string(if_stack.back()->LineNumber) + "No matching endif for if.");
+        throw SyntaxError("At line " + std::to_string(if_stack.back()->LineNumber + 1) + ": No matching endif for if.");
 }
 
 void Interpreter::parse_def() {
@@ -127,14 +162,14 @@ void Interpreter::parse_def() {
             def_stack.push_back(line);
         } else if (line->getType() == 2) { // END_DEF
             if (def_stack.empty())
-                throw SyntaxError("At line:" + std::to_string(line->LineNumber) + "No matching def for enddef.");
+                throw SyntaxError("At line " + std::to_string(line->LineNumber + 1) + ": No matching def for enddef.");
             dynamic_cast<DEF*>(def_stack.back())->setEnd(line->LineNumber);
             dynamic_cast<END_DEF*>(line)->setBegin(def_stack.back()->LineNumber);
             def_stack.pop_back();
         }
     }
     if (!def_stack.empty())
-        throw SyntaxError("At line:" + std::to_string(def_stack.back()->LineNumber) + "No matching enddef for def.");
+        throw SyntaxError("At line " + std::to_string(def_stack.back()->LineNumber + 1) + ": No matching enddef for def.");
 }
 
 void Interpreter::parse_while() {
@@ -144,19 +179,19 @@ void Interpreter::parse_while() {
             while_stack.push_back(line);
         } else if (line->getType() == 6) { // END_WHILE
             if (while_stack.empty())
-                throw SyntaxError("At line:" + std::to_string(line->LineNumber) + "No matching while for endwhile.");
+                throw SyntaxError("At line " + std::to_string(line->LineNumber + 1) + ": No matching while for endwhile.");
             dynamic_cast<WHILE*>(while_stack.back())->setEnd(line->LineNumber);
             dynamic_cast<END_WHILE*>(line)->setBegin(while_stack.back()->LineNumber);
             while_stack.pop_back();
         }
     }
     if (!while_stack.empty())
-        throw SyntaxError("At line:" + std::to_string(while_stack.back()->LineNumber) + "No matching endwhile for while.");
+        throw SyntaxError("At line " + std::to_string(while_stack.back()->LineNumber + 1) + ": No matching endwhile for while.");
 }
 
 void Interpreter::parse(std::fstream& code_file) {
     std::string buffer;
-    int LineNumber = 1;
+    int LineNumber = 0;
     while (std::getline(code_file, buffer)) {
         #ifdef iDEBUG
         std::cout << "Parsing line " << LineNumber << ": " << buffer << std::endl;
@@ -201,11 +236,11 @@ void Interpreter::interpret(std::fstream& code_file) {
     for (auto line : codes) {
         line->show();
     }
-    std::cout << "CurrentLine: " << CurrentLine << std::endl;
+    std::cout << "CurrentLine: " << CurrentLine + 1 << std::endl;
     #endif
-    while (CurrentLine < codes.size() + 1) { // note that CurrentLine starts from 1.
+    while (CurrentLine < codes.size()) { // note that CurrentLine starts from 1.
         #ifdef iDEBUG
-        std::cout << "Executing line " << CurrentLine << std::endl;
+        std::cout << "Executing line " << CurrentLine + 1<< std::endl;
         #endif
         codes[CurrentLine]->execute(this);
     }

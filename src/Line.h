@@ -5,10 +5,10 @@ class Interpreter;
 
 class Line{
 protected:
-    const std::string& expr;
+    std::string expr;
     int LineNumber;
 public:
-    Line(std::string _expr, int _LineNumber):
+    Line(const std::string& _expr, int _LineNumber):
         expr(_expr), 
         LineNumber(_LineNumber)
     {}

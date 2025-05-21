@@ -39,7 +39,7 @@ public:
         codes(),
         functions(),
         variables(),
-        regex_for_variable(R"(([a-zA-Z_]\w*)(?![\w\(]))"),
+        regex_for_variable(R"(([a-zA-Z_]\w*)(?!\w|\[))"),
         regex_for_function(R"(([a-zA-Z_]\w*)\[([\w,\s\(\)\[\]]*)\])"),
         // [1] for function name, [2] for arguments
         regex_for_param_list(R"((\w+)\s*(?=,|\]))")
