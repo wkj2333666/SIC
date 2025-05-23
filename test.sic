@@ -1,0 +1,42 @@
+# variable definition & assignment
+let x = 1
+let x = x+1
+
+# print
+print x * (2+1)
+# Output: 6
+
+# while loop
+let f_i = 1
+let f_i_1 = 1
+let i = 2
+let n = 40
+while i < n
+    let f_i = f_i + f_i_1
+    let f_i_1 = f_i - f_i_1
+    let i = i + 1
+    # Fibonacci sequence
+endwhile
+print f_i
+# Output: 102334155
+
+# if
+if i == 40
+    print 40
+    # Output: 40
+endif
+
+# function
+def Fibonacci[n]
+    if n == 1
+        return 1
+    endif
+    if n == 2
+        return 1
+    endif
+    let x = n-1
+    let y = n-2
+    return Fibonacci[x] + Fibonacci[y]
+enddef
+print Fibonacci[10]
+# Output: 55
