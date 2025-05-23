@@ -1,10 +1,10 @@
 <div align=center>
-    <font size="7">
+    <font size="20">
         <b>SIC</b>
     </font>
 </div>
 <div align=center>
-    <font size=6>
+    <font size=15>
         <b>Simple Interpreter in C++</b>
     </font>
 </div>
