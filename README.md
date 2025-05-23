@@ -10,6 +10,12 @@
 </div>
 
 ##### SIC is A simple interpreter implemented in C++
+- **Setup**
+In the workspace folder
+```shell
+make
+```
+The executable can be found at ./bin/SIC
 - **Features:**
     - **Dynamic** types
     - **Script** mode & **Calculator** mode

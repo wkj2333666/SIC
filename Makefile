@@ -1,10 +1,25 @@
-./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o
+OBJDIR = obj
+BINDIR = bin
+
+./bin/SIC: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o src/Exception.h | $(BINDIR)
 	g++ $^ -o $@ -std=c++17
 
-./obj/main.o: ./src/main.cpp ./src/Exception.h
+.PHONY: $(OBJDIR)
+.PHONY: $(BINDIR)
+
+$(OBJDIR):
+	mkdir -p $@
+
+$(BINDIR):
+	mkdir -p $@
+
+./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o src/Exception.h | $(BINDIR)
+	g++ $^ -o $@ -std=c++17
+
+./obj/main.o: ./src/main.cpp ./src/Exception.h | $(OBJDIR)
 	g++ -c $< -o $@ -std=c++17 
 
-./obj/%.o: ./src/%.cpp ./src/%.h
+./obj/%.o: ./src/%.cpp ./src/%.h | $(OBJDIR)
 	g++ -c $< -o $@ -std=c++17 
 
 .PHONY: clean
@@ -18,7 +33,7 @@
 .PHONY: fresh
 
 clean:
-	rm -rf ./obj/*.o ./bin/main
+	rm -rf ./obj/*.o ./bin/*
 
 run:
 	./bin/main
