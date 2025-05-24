@@ -46,49 +46,49 @@ public:
 
 class ADD : public OpToken{
 public:
-    ADD(): OpToken("+", 0) {}
+    ADD(): OpToken("+", 1) {}
     ~ADD() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class SUB : public OpToken{
 public:
-    SUB(): OpToken("-", 0) {}
+    SUB(): OpToken("-", 1) {}
     ~SUB() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class MUL : public OpToken{
 public:
-    MUL(): OpToken("*", 1) {}
+    MUL(): OpToken("*", 2) {}
     ~MUL() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class DIV : public OpToken{
 public:
-    DIV(): OpToken("/", 1) {}
+    DIV(): OpToken("/", 2) {}
     ~DIV() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class POW : public OpToken{
 public:
-    POW(): OpToken("^", 2) {}
+    POW(): OpToken("^", 3) {}
     ~POW() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class MOD : public OpToken{
 public:
-    MOD(): OpToken("%", 1) {}
+    MOD(): OpToken("%", 2) {}
     ~MOD() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };
 
 class IDIV : public OpToken{
 public:
-    IDIV(): OpToken("//", 1) {}
+    IDIV(): OpToken("//", 2) {}
     ~IDIV() override = default;
     std::shared_ptr<DataToken> calc(const std::shared_ptr<const DataToken> , const std::shared_ptr<const DataToken>) const override;
 };

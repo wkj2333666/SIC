@@ -54,7 +54,8 @@ The executable can be found at ./bin/SIC
         - **negative mark**
         - ^ exponential operator
         - \* / // % multiplication relevant operator
-        - \+ \- == != > < >= <= add, subtraction and comparison operator
+        - \+ \- add and subtraction operator
+        - == != > < >= <= comparison operator
         - = assignment operator
 - **Modes**:
     - **Script** mode:
