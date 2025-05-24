@@ -11,7 +11,7 @@
 
 ##### SIC is a simple interpreter implemented in C++
 - **Development platform**: Win11 amd64
-- **Setup**
+- **Setup**:  
 In the workspace folder
 ```shell
 make
@@ -73,7 +73,7 @@ bin/SIC script_test.sic
 bin/SIC
 ```
 - **Examples**:
-All test examples can be found in **./test**
+All test examples can be found in **./test**  
 [script_test.sic](test/script_test.sic)
 ```SIC
 # variable definition & assignment
