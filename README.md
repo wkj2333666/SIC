@@ -9,7 +9,7 @@
     </font>
 </div>
 
-##### SIC is a simple interpreter implemented in C++
+##### [SIC](https://github.com/wkj2333666/SIC) is a simple interpreter implemented in C++
 - **Development platform**: Win11 amd64
 - **Setup**:  
 In the workspace folder
