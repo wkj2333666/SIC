@@ -44,6 +44,12 @@ public:
     InvalidCalculation(const char *message) : CalcError(message) {}
 };
 
+class DIV0 : public CalcError {
+public:
+    DIV0(const std::string &message) : CalcError(message) {}
+    DIV0(const char *message) : CalcError(message) {}
+};
+
 // class NoExpression : public CalcError {
 // public:
 //     NoExpression(const std::string &message) : CalcError(message) {}

@@ -2,19 +2,19 @@ OBJDIR = obj
 BINDIR = bin
 
 ./bin/SIC: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o src/Exception.h | $(BINDIR)
-	g++ $^ -o $@ -std=c++17
+	g++ ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o -o $@ -std=c++17
 
 .PHONY: $(OBJDIR)
 .PHONY: $(BINDIR)
 
 $(OBJDIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 $(BINDIR):
-	mkdir -p $@
+	@mkdir -p $@
 
 ./bin/main: ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o src/Exception.h | $(BINDIR)
-	g++ $^ -o $@ -std=c++17
+	g++ ./obj/main.o ./obj/Token.o ./obj/Tokenizer.o ./obj/Calculator.o ./obj/Interpreter.o ./obj/Line.o -o $@ -std=c++17
 
 ./obj/main.o: ./src/main.cpp ./src/Exception.h | $(OBJDIR)
 	g++ -c $< -o $@ -std=c++17 

@@ -1,15 +1,16 @@
 <div align=center>
-    <font size="20">
+    <font size="70">
         <b>SIC</b>
     </font>
 </div>
 <div align=center>
-    <font size=15>
+    <font size=50>
         <b>Simple Interpreter in C++</b>
     </font>
 </div>
 
-##### SIC is A simple interpreter implemented in C++
+##### SIC is a simple interpreter implemented in C++
+- **Development platform**: Win11 amd64
 - **Setup**
 In the workspace folder
 ```shell
@@ -33,9 +34,48 @@ The executable can be found at ./bin/SIC
     - To use a **if** command, put the condition right after the keyword "**if**" **without** (), and add keyword "**endif**" to demonstrate that the body is ended.
     - To **output** a value of a variable or an instant expression, use keyword "**print**" and put the output content after it.
     - To add a **comment** which will be **ignored** by the interpreter, put character '**#**' at the beginning of a line.
-- **Examples**:
-[test.sic](test.sic)
+    - **Operators**:
+        - \+ for **add**
+        - \- for **subtraction** and **negative mark**
+        - \* for **multiplication**
+        - /  for **division**
+        - // for **integer division** in C++
+        - %  for **modulo**
+        - ^  for **exponential** operation
+        - =  for **assignment**
+        - == for **equal** comparison
+        - != for **not equal** comparison
+        - \> for **greater than** comparison
+        - <  for **less than** comparison
+        - \>= for **grater than or equal to** comparison
+        - <= for **less than or equal to** comparison
+    - Arithmetical **priority**:
+        Listing **from high to low**:
+        - **negative mark**
+        - ^ exponential operator
+        - \* / // % multiplication relevant operator
+        - \+ \- == != > < >= <= add, subtraction and comparison operator
+        - = assignment operator
+- **Modes**:
+    - **Script** mode:
+        - Activated when passed a script file as an argument in the terminal.
+        - Exit when the script finishes or a syntax error occurs.
+    - **Calculator** mode:
+        - Activated when no file is assigned.
+        - Receive input from terminal as expression, and print the result instantly.
+        - Keep running after catching exceptions.
+        - Exit when receive EOF.
+```shell
+# Script mode:
+bin/SIC script_test.sic
+
+# Calculator mode:
+bin/SIC
 ```
+- **Examples**:
+All test examples can be found in **./test**
+[script_test.sic](test/script_test.sic)
+```SIC
 # variable definition & assignment
 let x = 1
 let x = x+1
@@ -79,13 +119,81 @@ enddef
 print Fibonacci[10]
 # Output: 55
 ```
-- **Modes**:
-    - **Script** mode:
-        - Activated when passed a script file as an argument in the terminal.
-        - Exit when the script finishes.
-    - **Calculator** mode:
-        - Activated when no file is assigned.
-        - Receive input from terminal as expression, and print the result instantly.
+[calculator_test.in](test/calculator_test.in)
+```
+1
+-2 +3
+(1-9)*8
+2+6/5
+0.1+0.2
+5//2
+5 % 2
+2^3
+2^3.3
+-1.1^3
+1 == 1
+1 > 1
+1<=1
+1 != 1
+1+
+(2+3
+()))20+2
+1/0
+1//0
+-1.1^1.1
+
+hello world
+```
+[calculator_test.ans](test/calculator_test.ans)
+```
+1
+1
+-64
+3.200000
+0.300000
+2
+1
+8.000000
+9.849155
+-1.331000
+1
+0
+1
+0
+Expected digit, got: "", at 2
+Lacking right parenthesis
+Extra right parenthesis
+inf
+Divided by 0!
+nan
+
+Expected digit, got: "h", at 0
+```
 - **Unsupported yet**:
-    - Processing string type
-    - Handling expressions as function arguments
+    - Processing **string** type.
+    - Handling **expressions** as function **arguments**.
+    - **Chinese characters**. This also may cause **exception report** to be ineffective in **Calculator** mode.
+    - Add **negative mark** to an **expression**
+```SIC
+# error examples:
+
+print "Hello World!"
+# error!
+
+def add[a, b]
+    return a+b
+enddef
+
+print add[1+1, 1]
+# error, but you can do this by:
+let x = 1+1
+print add[x, 1]
+
+let 变量 = 1
+print 变量
+# error
+
+print -(1+1)
+# error, but you can do this by:
+print -1 * (1+1)
+```

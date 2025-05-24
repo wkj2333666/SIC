@@ -1,4 +1,5 @@
 #include "Token.h"
+#include "Exception.h"
 
 #include <iostream>
 #include <cmath>
@@ -112,6 +113,8 @@ std::shared_ptr<DataToken> POW::calc(const std::shared_ptr<const DataToken> left
 
 std::shared_ptr<DataToken> MOD::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
+        if (std::get<int>(right->getData()) == 0)
+            throw DIV0("Divided by 0!");
         return std::make_shared<DataToken>(std::get<int>(left->getData()) % std::get<int>(right->getData()));
     }
     return nullptr; // invalid MOD operation!
@@ -119,6 +122,8 @@ std::shared_ptr<DataToken> MOD::calc(const std::shared_ptr<const DataToken> left
 
 std::shared_ptr<DataToken> IDIV::calc(const std::shared_ptr<const DataToken> left, const std::shared_ptr<const DataToken> right) const{
     if (left->getData().index() == 0 && right->getData().index() == 0) {
+        if (std::get<int>(right->getData()) == 0)
+            throw DIV0("Divided by 0!");
         return std::make_shared<DataToken>(std::get<int>(left->getData()) / std::get<int>(right->getData()));
     }
     return nullptr; // invalid IDIV operation!
